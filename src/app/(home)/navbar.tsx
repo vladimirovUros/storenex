@@ -92,6 +92,8 @@ export const Navbar = () => {
           variant="ghost"
           className="size-12 border-transparent bg-white"
           onClick={() => setSidebarOpen(true)}
+          aria-label="Open menu"
+          // aria-expanded={isSidebarOpen}
         >
           <MenuIcon />
         </Button>
