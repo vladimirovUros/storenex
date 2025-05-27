@@ -1,9 +1,9 @@
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import { Category } from "@/payload-types";
 import Link from "next/link";
-import { CustomCategory } from "../types";
 
 interface SubcategoryMenuProps {
-  category: CustomCategory;
+  category: CategoriesGetManyOutput[number];
   isOpen: boolean;
   position: {
     top: number;
@@ -28,7 +28,7 @@ export const SubcategoryMenu = ({
 
   return (
     <div
-      className="fixed z-100"
+      className="fixed z-[100]"
       style={{ top: position.top, left: position.left }}
     >
       {/* Invisible bridge to maintain hover */}
@@ -37,7 +37,7 @@ export const SubcategoryMenu = ({
         style={{ backgroundColor }}
         className="w-60 text-black rounded-md overflow-hidden border shadow-[4px_4px_4px_0px_rgba(0,0,0,0.1)] -translate-x-[2px] -translate-y-[2px]"
       >
-        <div>
+        <div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
           {category.subcategories?.map((subcategory: Category) => (
             <Link
               key={subcategory.slug}
