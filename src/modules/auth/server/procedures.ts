@@ -79,7 +79,7 @@ export const authRouter = createTRPCRouter({
         if (!data.token) {
           throw new TRPCError({
             code: "UNAUTHORIZED",
-            message: "Filed to login, Invalid email or password",
+            message: "Failed to log in, Invalid email or password",
           });
         }
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/client";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
 
