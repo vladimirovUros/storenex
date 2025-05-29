@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/client";
+import { Toaster } from "sonner";
 
 import "./globals.css";
 
@@ -25,6 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${DM_SANS.className} antialiased`}>
         <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Toaster position="bottom-right" expand={true} richColors />
       </body>
     </html>
   );

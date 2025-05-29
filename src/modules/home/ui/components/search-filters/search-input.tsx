@@ -1,10 +1,13 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { ListFilterIcon, SearchIcon } from "lucide-react";
+import { BookmarkCheckIcon, ListFilterIcon, SearchIcon } from "lucide-react";
 import { CategoriesSidebar } from "./categories-sidebar";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useTRPC } from "@/trpc/client";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 
 interface SearchFiltersProps {
   disabled?: boolean;
@@ -15,6 +18,11 @@ export const SearchInput = ({
   placeholder = "Search...",
 }: SearchFiltersProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const trpc = useTRPC();
+  const session = useQuery(trpc.auth.session.queryOptions());
+  ``;
+
   return (
     <div className="flex items-center gap-2 w-full">
       <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
@@ -27,7 +35,6 @@ export const SearchInput = ({
           className="pl-8"
         />
       </div>
-      {/*TODO: Add categories view button*/}
       <Button
         variant="elevated"
         className="size-12 shrink-0 flex lg:hidden"
@@ -35,7 +42,14 @@ export const SearchInput = ({
       >
         <ListFilterIcon />
       </Button>
-      {/*TODO: Add library button*/}
+      {session.isSuccess && session.data?.user && (
+        <Link href="/library">
+          <Button variant="elevated" className="flex items-center gap-2">
+            Library
+            <BookmarkCheckIcon />
+          </Button>
+        </Link>
+      )}
     </div>
   );
 };
