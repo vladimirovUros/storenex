@@ -177,6 +177,7 @@ export const SignInView = () => {
               variant="elevated"
               className="bg-black text-white hover:bg-orange-400 hover:text-primary"
               disabled={!form.formState.isValid || login.isPending}
+              aria-busy={login.isPending}
             >
               {login.isPending ? (
                 <>
