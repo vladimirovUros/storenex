@@ -22,7 +22,6 @@ export const categoriesRouter = createTRPCRouter({
       subcategories: (doc.subcategories?.docs ?? []).map((doc) => ({
         //Because of 'depth: 1' i know "doc" will be a type of "Category"
         ...(doc as Category),
-        subcategories: undefined,
       })),
     }));
     // This is where you would fetch categories from your database or any other source

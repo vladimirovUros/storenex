@@ -137,6 +137,13 @@
   scrollbar-color: #333 transparent;
 }
 
+/* // import { Toaster } from "@/components/ui/sonner"; */
+/* [data-sonner-toast][data-type="error"] { AKO KORISITM OVAJ GORE IMPORT U LAYOUT.TSX
+  --error-bg: #fefefe !important;
+  --error-border: #ff4d4f !important;
+  --error-text: #d32f2f !important;
+} */
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

@@ -64,12 +64,6 @@ export const SignUpView = () => {
         toast.success(
           `Account created successfully! Welcome ${data.username} Please check your email to verify your account.`
         );
-        // ✨ Rich success poruka
-        // toast("Welcome to Storenex!", {
-        //   description: "Your account has been created. You can now sign in.",
-        //   type: "success",
-        //   richColors: true,
-        // });
       },
       onError: (error) => {
         // console.log("Registration failed:", error);!!!!!!!!!!!!!!!!!!!!!
@@ -86,13 +80,6 @@ export const SignUpView = () => {
         }
 
         toast.error(errorMessage);
-        // ✨ Rich error poruka sa detaljem
-        // toast("Oops! Something went wrong.", {
-        //   description: error?.message || "An unexpected error occurred.",
-        //   type: "error",
-        //   richColors: true,
-        //   icon: "❗",
-        // });
       },
     });
   };
