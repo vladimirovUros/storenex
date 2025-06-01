@@ -78,16 +78,6 @@ export const SignInView = () => {
 
         toast.error(errorMessage);
 
-        // toast("Oops! Something went wrong.", {
-        //   description: error?.message || "An unexpected error occurred.",
-        //   richColors: true,
-        //   icon: "❗",
-        //   style: {
-        //     backgroundColor: "red",
-        //     color: "#ffffff",
-        //   },
-        // });
-
         setTimeout(() => {
           form.clearErrors(["email", "password"]);
         }, 3000);

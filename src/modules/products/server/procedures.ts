@@ -1,13 +1,73 @@
-import { Category } from "@/payload-types";
+import { Category, Media } from "@/payload-types";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
-import { Where } from "payload";
+import { Sort, Where } from "payload";
 import z from "zod";
+import { sortValues } from "../search-params";
+import { DEFAULT_LIMIT } from "@/constants";
 
 export const productsRouter = createTRPCRouter({
   getMany: baseProcedure
-    .input(z.object({ category: z.string().nullable().optional() }))
+    .input(
+      z.object({
+        cursor: z.number().default(1),
+        limit: z.number().default(DEFAULT_LIMIT),
+        category: z.string().nullable().optional(),
+        minPrice: z.string().nullable().optional(),
+        maxPrice: z.string().nullable().optional(),
+        tags: z.array(z.string()).nullable().optional(),
+        sort: z.enum(sortValues).nullable().optional(),
+      })
+    )
     .query(async ({ ctx, input }) => {
       const where: Where = {};
+      const min = parseFloat(input.minPrice ?? "");
+      const max = parseFloat(input.maxPrice ?? "");
+
+      let sort: Sort = "-createdAt"; // Default sort
+
+      // if (input.sort === "trending") {
+      //   sort = "name";
+      // } else if (input.sort === "price-asc") {
+      //   sort = "price";
+      // } else if (input.sort === "price-desc") {
+      //   sort = "-price";
+      // } else if (input.sort === "best-selling") {
+      //   sort = "-salesCount";
+      // } else if (input.sort === "highest-rated") {
+      //   sort = "-averageRating";
+      // } else if (input.sort === "most-discounted") {
+      //   sort = "-discountPercentage";
+      // } else if (input.sort === "relevance") {
+      //   sort = "-relevanceScore";
+      // } else if (input.sort === "hot_and_new") {
+      //   sort = "+createdAt";
+      // } else if (input.sort === "curated") {
+      //   sort = "-createdAt";
+      // }
+
+      if (input.sort === "curated") {
+        sort = "-createdAt"; // Default sort for curated
+      } else if (input.sort === "hot_and_new") {
+        sort = "+createdAt"; // Sort by creation date for hot and new
+      } else if (input.sort === "trending") {
+        sort = "-createdAt";
+      }
+
+      //Backend validation for minPrice and maxPrice
+      if (!isNaN(min) && !isNaN(max) && min > max) {
+        throw new Error("Minimum price cannot be greater than maximum price.");
+      }
+      const priceFilter: Record<string, number> = {};
+      if (!isNaN(min)) {
+        priceFilter.greater_than_equal = min;
+      }
+      if (!isNaN(max)) {
+        priceFilter.less_than_equal = max;
+      }
+      if (Object.keys(priceFilter).length > 0) {
+        where.price = priceFilter;
+      }
+
       if (input.category) {
         const categoriesData = await ctx.dataBase.find({
           collection: "categories",
@@ -41,9 +101,15 @@ export const productsRouter = createTRPCRouter({
               (subcategories) => subcategories.slug
             )
           );
+          where["category.slug"] = {
+            in: [parentCategory.slug, ...subcategoriesSlugs],
+          };
         }
-        where["category.slug"] = {
-          in: [parentCategory.slug, ...subcategoriesSlugs],
+      }
+
+      if (input.tags && input.tags.length > 0) {
+        where["tags.name"] = {
+          in: input.tags,
         };
       }
       const payload = ctx.dataBase;
@@ -51,8 +117,18 @@ export const productsRouter = createTRPCRouter({
         collection: "products",
         depth: 1, //Populate "category", & "image"
         where,
+        sort,
+        page: input.cursor,
+        limit: input.limit,
+        // pagination: true,
       });
 
-      return data;
+      return {
+        ...data,
+        docs: data.docs.map((doc) => ({
+          ...doc,
+          image: doc.image as Media | null,
+        })),
+      };
     }),
 });
