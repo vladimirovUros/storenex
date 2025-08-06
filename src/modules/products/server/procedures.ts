@@ -130,7 +130,7 @@ export const productsRouter = createTRPCRouter({
         // pagination: true,
       });
 
-      console.log(JSON.stringify(data.docs, null, 2));
+      // console.log(JSON.stringify(data.docs, null, 2));
 
       return {
         ...data,

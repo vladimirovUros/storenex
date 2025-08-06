@@ -1,14 +1,16 @@
+import { generateTenantURL } from "@/lib/utils";
 import { StarIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
   id: string;
   name: string;
   imageUrl?: string | null;
   price: number;
-  authorUsername: string;
-  authorImageUrl?: string | null;
+  tenantSlug: string;
+  tenantImageUrl?: string | null;
   reviewRating: number;
   reviewCount: number;
 }
@@ -18,11 +20,19 @@ export const ProductCard = ({
   name,
   imageUrl,
   price,
-  authorUsername,
-  authorImageUrl,
+  tenantSlug,
+  tenantImageUrl,
   reviewRating,
   reviewCount,
 }: ProductCardProps) => {
+  const router = useRouter();
+
+  const handleUserClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    router.push(generateTenantURL(tenantSlug));
+  };
   return (
     <Link href={`/products/${id}`} className="no-underline">
       <div className="border rounded-md bg-white overflow-hidden h-full flex flex-col hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-shadow duration-200">
@@ -39,18 +49,18 @@ export const ProductCard = ({
         </div>
         <div className="p-4 border-y flex flex-col gap-3 flex-1">
           <h2 className="text-lg font-medium line-clamp-4">{name}</h2>
-          <div className="flex items-center gap-2" onClick={() => {}}>
-            {authorImageUrl && (
+          <div className="flex items-center gap-2" onClick={handleUserClick}>
+            {tenantImageUrl && (
               <Image
-                src={authorImageUrl}
-                alt={authorUsername}
+                src={tenantImageUrl}
+                alt={tenantSlug}
                 width={16}
                 height={16}
                 className="rounded-full border shrink-0 size-[16px]"
               />
             )}
             <p className="text-sm underline font-medium text-gray-500">
-              {authorUsername}
+              {tenantSlug}
             </p>
           </div>
           {reviewCount > 0 && (
