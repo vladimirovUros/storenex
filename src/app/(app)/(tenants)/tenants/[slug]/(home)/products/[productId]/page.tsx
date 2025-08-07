@@ -9,7 +9,12 @@ const Page = async ({ params }: Props) => {
   const { productId, slug } = await params;
 
   const queryClient = getQueryClient();
+
+  // Prefetch oba poziva na server side
   void queryClient.prefetchQuery(trpc.tenants.getOne.queryOptions({ slug }));
+  void queryClient.prefetchQuery(
+    trpc.products.getOne.queryOptions({ id: productId })
+  );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
