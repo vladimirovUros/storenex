@@ -10,7 +10,7 @@ const Page = async ({ params }: Props) => {
 
   const queryClient = getQueryClient();
 
-  // Prefetch oba poziva na server side
+  // Prefetch oba poziva na server side-u
   void queryClient.prefetchQuery(trpc.tenants.getOne.queryOptions({ slug }));
   void queryClient.prefetchQuery(
     trpc.products.getOne.queryOptions({ id: productId })
