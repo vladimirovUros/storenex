@@ -2,6 +2,9 @@ import type { CollectionConfig } from "payload";
 
 export const Products: CollectionConfig = {
   slug: "products",
+  admin: {
+    useAsTitle: "name",
+  },
   fields: [
     {
       name: "name",
@@ -17,7 +20,7 @@ export const Products: CollectionConfig = {
       type: "number",
       required: true,
       admin: {
-        description: "Price in EUR",
+        description: "Price in USD",
       },
     },
     {
