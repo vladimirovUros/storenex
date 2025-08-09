@@ -4,6 +4,7 @@ import { Sort, Where } from "payload";
 import z from "zod";
 import { sortValues } from "../search-params";
 import { DEFAULT_LIMIT } from "@/constants";
+import { headers as getHeaders } from "next/headers";
 
 export const productsRouter = createTRPCRouter({
   getOne: baseProcedure
@@ -13,6 +14,9 @@ export const productsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
+      const headers = await getHeaders();
+      const session = await ctx.dataBase.auth({ headers });
+
       const product = await ctx.dataBase.findByID({
         collection: "products",
         id: input.id,
@@ -23,8 +27,36 @@ export const productsRouter = createTRPCRouter({
         throw new Error("Product not found");
       }
 
+      let isPurchased = false;
+
+      if (session.user) {
+        const ordersData = await ctx.dataBase.find({
+          collection: "orders",
+          pagination: false,
+          limit: 1,
+          where: {
+            and: [
+              {
+                product: {
+                  equals: input.id,
+                },
+              },
+              {
+                user: {
+                  equals: session.user.id,
+                },
+              },
+            ],
+          },
+        });
+
+        isPurchased = ordersData.totalDocs > 0;
+        // isPurchased = !!ordersData.docs[0];
+      }
+
       return {
         ...product,
+        isPurchased,
         image: product.image as Media | null,
         tenant: product.tenant as Tenant & { image: Media | null }, //loading the tenant is depth 1 and loading the image is depth 2 so its need to be depth 2 above
       };

@@ -47,7 +47,7 @@ export const SearchInput = ({
         <ListFilterIcon />
       </Button>
       {isClient && session.isSuccess && session.data?.user && (
-        <Link href="/library">
+        <Link prefetch href="/library">
           <Button variant="elevated" className="flex items-center gap-2">
             Library
             <BookmarkCheckIcon />
