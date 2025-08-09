@@ -45,7 +45,7 @@ export async function POST(request: Request) {
   if (permittedEvents.includes(event.type)) {
     try {
       switch (event.type) {
-        case "checkout.session.completed":
+        case "checkout.session.completed": {
           const data = event.data.object as Stripe.Checkout.Session;
           if (!data.metadata?.userId) {
             throw new Error("User ID is required");
@@ -57,7 +57,6 @@ export async function POST(request: Request) {
           if (!user) {
             throw new Error("User not found");
           }
-
           const expandedSession = await stripe.checkout.sessions.retrieve(
             data.id,
             {
@@ -85,8 +84,10 @@ export async function POST(request: Request) {
             });
           }
           break;
+        }
         default:
-          throw new Error(`Unhandled event type: ${event.type}`);
+          console.log(`Unhandled event type: ${event.type}`);
+          break;
       }
     } catch (error) {
       console.error(`❌ Error handling webhook: ${error}`);
