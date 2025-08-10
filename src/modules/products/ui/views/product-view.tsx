@@ -72,9 +72,9 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
                     <Image
                       src={data.tenant.image.url}
                       alt={data.tenant.name}
-                      width={20}
-                      height={20}
-                      className="rounded-full border shrink-0 size-[20px]"
+                      width={24}
+                      height={24}
+                      className="rounded-full border shrink-0 size-[24px]"
                     />
                   )}
                   <p className="text-base underline font-medium">

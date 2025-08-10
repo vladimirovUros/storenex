@@ -89,29 +89,46 @@ export const libraryRouter = createTRPCRouter({
         },
       });
 
-      const dataWithSummarizeReviews = await Promise.all(
-        productsData.docs.map(async (doc) => {
-          const reviewsData = await ctx.dataBase.find({
-            collection: "reviews",
-            where: {
-              product: {
-                equals: doc.id,
-              },
-            },
-          });
-          return {
-            ...doc,
-            reviewCount: reviewsData.totalDocs,
-            reviewRating:
-              reviewsData.docs.length === 0
-                ? 0
-                : reviewsData.docs.reduce(
-                    (acc, review) => acc + review.rating,
-                    0
-                  ) / reviewsData.totalDocs,
-          };
-        })
+      const allReviewsData = await ctx.dataBase.find({
+        collection: "reviews",
+        pagination: false,
+        where: {
+          product: {
+            in: productIds,
+          },
+        },
+      });
+
+      const reviewsByProductId = allReviewsData.docs.reduce(
+        (acc, review) => {
+          const productId =
+            typeof review.product === "string"
+              ? review.product
+              : review.product.id;
+          if (!acc[productId]) {
+            acc[productId] = [];
+          }
+          acc[productId].push(review);
+          return acc;
+        },
+        {} as Record<string, typeof allReviewsData.docs>
       );
+
+      const dataWithSummarizeReviews = productsData.docs.map((doc) => {
+        const productReviews = reviewsByProductId[doc.id] || [];
+        const reviewCount = productReviews.length;
+        const reviewRating =
+          reviewCount === 0
+            ? 0
+            : productReviews.reduce((acc, review) => acc + review.rating, 0) /
+              reviewCount;
+
+        return {
+          ...doc,
+          reviewCount,
+          reviewRating,
+        };
+      });
 
       return {
         ...productsData,

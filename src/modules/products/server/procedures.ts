@@ -125,26 +125,6 @@ export const productsRouter = createTRPCRouter({
 
       let sort: Sort = "-createdAt"; // Default sort
 
-      // if (input.sort === "trending") {
-      //   sort = "name";
-      // } else if (input.sort === "price-asc") {
-      //   sort = "price";
-      // } else if (input.sort === "price-desc") {
-      //   sort = "-price";
-      // } else if (input.sort === "best-selling") {
-      //   sort = "-salesCount";
-      // } else if (input.sort === "highest-rated") {
-      //   sort = "-averageRating";
-      // } else if (input.sort === "most-discounted") {
-      //   sort = "-discountPercentage";
-      // } else if (input.sort === "relevance") {
-      //   sort = "-relevanceScore";
-      // } else if (input.sort === "hot_and_new") {
-      //   sort = "+createdAt";
-      // } else if (input.sort === "curated") {
-      //   sort = "-createdAt";
-      // }
-
       if (input.sort === "curated") {
         sort = "-createdAt"; // Default sort for curated
       } else if (input.sort === "hot_and_new") {
@@ -187,8 +167,6 @@ export const productsRouter = createTRPCRouter({
           },
         });
 
-        // console.log(JSON.stringify(categoriesData, null, 2));
-
         const formattedData = categoriesData.docs.map((doc) => ({
           ...doc,
           subcategories: (doc.subcategories?.docs ?? []).map((doc) => ({
@@ -218,6 +196,7 @@ export const productsRouter = createTRPCRouter({
           in: input.tags,
         };
       }
+
       const payload = ctx.dataBase;
       const data = await payload.find({
         collection: "products",
@@ -229,31 +208,48 @@ export const productsRouter = createTRPCRouter({
         // pagination: true,
       });
 
-      const dataWithSummarizeReviews = await Promise.all(
-        data.docs.map(async (doc) => {
-          const reviewsData = await ctx.dataBase.find({
-            collection: "reviews",
-            where: {
-              product: {
-                equals: doc.id,
-              },
-            },
-          });
-          return {
-            ...doc,
-            reviewCount: reviewsData.totalDocs,
-            reviewRating:
-              reviewsData.docs.length === 0
-                ? 0
-                : reviewsData.docs.reduce(
-                    (acc, review) => acc + review.rating,
-                    0
-                  ) / reviewsData.totalDocs,
-          };
-        })
+      const productIds = data.docs.map((doc) => doc.id);
+
+      const allReviewsData = await ctx.dataBase.find({
+        collection: "reviews",
+        pagination: false,
+        where: {
+          product: {
+            in: productIds,
+          },
+        },
+      });
+
+      const reviewsByProductId = allReviewsData.docs.reduce(
+        (acc, review) => {
+          const productId =
+            typeof review.product === "string"
+              ? review.product
+              : review.product.id;
+          if (!acc[productId]) {
+            acc[productId] = [];
+          }
+          acc[productId].push(review);
+          return acc;
+        },
+        {} as Record<string, typeof allReviewsData.docs>
       );
 
-      // console.log(JSON.stringify(data.docs, null, 2));
+      const dataWithSummarizeReviews = data.docs.map((doc) => {
+        const productReviews = reviewsByProductId[doc.id] || [];
+        const reviewCount = productReviews.length;
+        const reviewRating =
+          reviewCount === 0
+            ? 0
+            : productReviews.reduce((acc, review) => acc + review.rating, 0) /
+              reviewCount;
+
+        return {
+          ...doc,
+          reviewCount,
+          reviewRating,
+        };
+      });
 
       return {
         ...data,
