@@ -54,11 +54,55 @@ export const productsRouter = createTRPCRouter({
         // isPurchased = !!ordersData.docs[0];
       }
 
+      const reviews = await ctx.dataBase.find({
+        collection: "reviews",
+        pagination: false,
+        where: {
+          product: {
+            equals: input.id,
+          },
+        },
+      });
+
+      const reviewRating =
+        reviews.docs.length > 0
+          ? reviews.docs.reduce((acc, review) => acc + review.rating, 0) /
+            reviews.totalDocs
+          : 0;
+
+      const ratingDistribution: Record<number, number> = {
+        5: 0,
+        4: 0,
+        3: 0,
+        2: 0,
+        1: 0,
+      };
+
+      if (reviews.totalDocs > 0) {
+        reviews.docs.forEach((review) => {
+          const rating = review.rating;
+          if (rating >= 1 && rating <= 5) {
+            ratingDistribution[rating] = (ratingDistribution[rating] || 0) + 1;
+          }
+        });
+
+        Object.keys(ratingDistribution).forEach((key) => {
+          const rating = Number(key);
+          const count = ratingDistribution[rating] || 0;
+          ratingDistribution[rating] = Math.round(
+            (count / reviews.totalDocs) * 100
+          );
+        });
+      }
+
       return {
         ...product,
         isPurchased,
         image: product.image as Media | null,
         tenant: product.tenant as Tenant & { image: Media | null }, //loading the tenant is depth 1 and loading the image is depth 2 so its need to be depth 2 above
+        reviewRating,
+        reviewCount: reviews.totalDocs,
+        ratingDistribution,
       };
     }),
   getMany: baseProcedure
@@ -185,11 +229,35 @@ export const productsRouter = createTRPCRouter({
         // pagination: true,
       });
 
+      const dataWithSummarizeReviews = await Promise.all(
+        data.docs.map(async (doc) => {
+          const reviewsData = await ctx.dataBase.find({
+            collection: "reviews",
+            where: {
+              product: {
+                equals: doc.id,
+              },
+            },
+          });
+          return {
+            ...doc,
+            reviewCount: reviewsData.totalDocs,
+            reviewRating:
+              reviewsData.docs.length === 0
+                ? 0
+                : reviewsData.docs.reduce(
+                    (acc, review) => acc + review.rating,
+                    0
+                  ) / reviewsData.totalDocs,
+          };
+        })
+      );
+
       // console.log(JSON.stringify(data.docs, null, 2));
 
       return {
         ...data,
-        docs: data.docs.map((doc) => ({
+        docs: dataWithSummarizeReviews.map((doc) => ({
           ...doc,
           image: doc.image as Media | null,
           tenant: doc.tenant as Tenant & { image: Media | null },

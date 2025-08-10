@@ -70,7 +70,9 @@ export const ProductCard = ({
             <div className="flex items-center gap-1">
               <StarIcon className="size-3.5 text-yellow-500 fill-amber-400" />
               <p className="text-sm font-medium ">
-                {reviewRating} ({reviewCount} reviews)
+                {reviewRating} (
+                {`${reviewCount === 1 ? "1 review" : `${reviewCount} reviews`}`}
+                )
               </p>
             </div>
           )}
