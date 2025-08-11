@@ -1,4 +1,4 @@
-import { formatCurrency, generateTenantURL } from "@/lib/utils";
+import { formatPrice, generateTenantURL, formatRating } from "@/lib/utils";
 import { StarIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -70,7 +70,7 @@ export const ProductCard = ({
             <div className="flex items-center gap-1">
               <StarIcon className="size-3.5 text-yellow-500 fill-amber-400" />
               <p className="text-sm font-medium ">
-                {reviewRating} (
+                {formatRating(reviewRating)} (
                 {`${reviewCount === 1 ? "1 review" : `${reviewCount} reviews`}`}
                 )
               </p>
@@ -80,7 +80,7 @@ export const ProductCard = ({
         <div className="p-4">
           <div className="relative px-2 py-1 border bg-orange-400 w-fit">
             <p className="text-sm font-medium text-white">
-              {formatCurrency(price)}
+              {formatPrice(price)}
             </p>
           </div>
         </div>

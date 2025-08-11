@@ -1,13 +1,19 @@
+import { isSuperAdmin } from "@/lib/access";
 import type { CollectionConfig } from "payload";
 
 export const Tags: CollectionConfig = {
   slug: "tags",
+  access: {
+    read: () => true,
+    create: ({ req }) => isSuperAdmin(req.user),
+    update: ({ req }) => isSuperAdmin(req.user),
+    delete: ({ req }) => isSuperAdmin(req.user),
+  },
   admin: {
     useAsTitle: "name",
     description:
       "Tags can be used to categorize products for easier filtering.",
-    // defaultColumns: ["name", "products"],
-    // group: "Products",
+    hidden: ({ user }) => !isSuperAdmin(user),
   },
   fields: [
     {

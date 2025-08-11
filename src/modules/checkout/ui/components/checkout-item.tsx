@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 
 interface CheckoutItemProps {
   price: number;
@@ -51,7 +51,7 @@ export const CheckoutItem = ({
         </div>
       </div>
       <div className="py-4 flex flex-col justify-between">
-        <p className="font-medium">{formatCurrency(price)}</p>
+        <p className="font-medium">{formatPrice(price)}</p>
         <button
           className="underline font-medium cursor-pointer"
           onClick={onRemove}

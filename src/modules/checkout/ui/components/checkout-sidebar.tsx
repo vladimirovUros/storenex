@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 import { CircleXIcon } from "lucide-react";
 
 interface CheckoutSidebarProps {
@@ -20,7 +20,7 @@ export const CheckoutSidebar = ({
       <h3 className="font-bold text-lg p-2.5">Order Summary</h3>
       <div className="flex items-center justify-between p-4 border-b">
         <h4 className="font-medium text-lg">Total:</h4>
-        <p className="font-bold text-lg">{formatCurrency(total)}</p>
+        <p className="font-bold text-lg">{formatPrice(total)}</p>
       </div>
       <div className="p-4 flex items-center justify-center">
         <Button

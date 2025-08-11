@@ -2,7 +2,7 @@
 import StarRating from "@/components/star-rating";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { formatCurrency, generateTenantURL } from "@/lib/utils";
+import { formatPrice, generateTenantURL, formatRating } from "@/lib/utils";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { CheckCheckIcon, LinkIcon, StarIcon } from "lucide-react";
@@ -59,7 +59,7 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
               <div className="px-6 py-4 flex items-center justify-center border-r">
                 <div className="px-2 border bg-orange-500 w-fit">
                   <p className="text-base font-medium">
-                    {formatCurrency(data.price)}
+                    {formatPrice(data.price)}
                   </p>
                 </div>
               </div>
@@ -193,7 +193,7 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
                   <h3 className="text-xl font-medium">Ratings</h3>
                   <div className="flex items-center gap-x-1 font-medium">
                     <StarIcon className="size-4 fill-black" />
-                    <p>({data.reviewRating})</p>
+                    <p>({formatRating(data.reviewRating)})</p>
                     <p className="text-base">{data.reviewCount} ratings</p>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import { StarIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { formatRating } from "@/lib/utils";
 
 interface ProductCardProps {
   id: string;
@@ -55,7 +56,7 @@ export const ProductCard = ({
             <div className="flex items-center gap-1">
               <StarIcon className="size-3.5 text-yellow-500 fill-amber-400" />
               <p className="text-sm font-medium ">
-                {reviewRating} ({reviewCount} reviews)
+                {formatRating(reviewRating)} ({reviewCount} reviews)
               </p>
             </div>
           )}

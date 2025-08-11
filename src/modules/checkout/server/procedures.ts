@@ -9,6 +9,7 @@ import type Stripe from "stripe";
 import z from "zod";
 import { CheckOutMetadata, ProductMetadata } from "../types";
 import { stripe } from "@/lib/stripe";
+import { getRoundedPrice } from "@/lib/utils";
 
 export const checkoutRouter = createTRPCRouter({
   purchase: protectedProcedure
@@ -63,22 +64,25 @@ export const checkoutRouter = createTRPCRouter({
       }
       //throw error if stripe details not submitted
       const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
-        products.docs.map((product) => ({
-          quantity: 1,
-          price_data: {
-            unit_amount: product.price * 100,
-            currency: "usd",
-            product_data: {
-              name: product.name,
-              metadata: {
-                stripeAccountId: tenant.stripeAccountId,
-                id: product.id,
+        products.docs.map((product) => {
+          const roundedPrice = getRoundedPrice(product.price);
+          return {
+            quantity: 1,
+            price_data: {
+              unit_amount: roundedPrice * 100,
+              currency: "usd",
+              product_data: {
                 name: product.name,
-                price: product.price,
-              } as ProductMetadata,
+                metadata: {
+                  stripeAccountId: tenant.stripeAccountId,
+                  id: product.id,
+                  name: product.name,
+                  price: roundedPrice,
+                } as ProductMetadata,
+              },
             },
-          },
-        }));
+          };
+        });
 
       const checkout = await stripe.checkout.sessions.create({
         customer_email: ctx.session.user.email,

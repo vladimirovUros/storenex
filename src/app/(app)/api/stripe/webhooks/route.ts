@@ -34,11 +34,7 @@ export async function POST(request: Request) {
   }
   console.log(`✅ Success: ${event.id}, ${event.type}`);
 
-  const permittedEvents: string[] = [
-    "checkout.session.completed",
-    // "payment_intent.succeeded",
-    // "payment_intent.payment_failed",
-  ];
+  const permittedEvents: string[] = ["checkout.session.completed"];
 
   const payload = await getPayload({ config });
 
@@ -50,36 +46,65 @@ export async function POST(request: Request) {
           if (!data.metadata?.userId) {
             throw new Error("User ID is required");
           }
+
           const user = await payload.findByID({
             collection: "users",
             id: data.metadata.userId,
           });
+
           if (!user) {
             throw new Error("User not found");
           }
+
           const expandedSession = await stripe.checkout.sessions.retrieve(
             data.id,
             {
               expand: ["line_items.data.price.product"],
             }
           );
+
           if (
             !expandedSession.line_items?.data ||
             !expandedSession.line_items.data.length
           ) {
             throw new Error("No line items found in session"); //we could load what you purchased, to otp to znaci..
           }
+
           const lineItems = expandedSession.line_items
             .data as ExpandedLineItem[];
 
           for (const item of lineItems) {
+            const product = await payload.findByID({
+              collection: "products",
+              id: item.price.product.metadata.id,
+              depth: 1, // Da bi dobili tenant podatke
+            });
+
+            if (!product) {
+              throw new Error(
+                `Product not found: ${item.price.product.metadata.id}`
+              );
+            }
+
+            if (!product.tenant) {
+              throw new Error(
+                `Product ${product.id} does not have an associated tenant`
+              );
+            }
+
+            const tenantId =
+              typeof product.tenant === "string"
+                ? product.tenant
+                : product.tenant.id;
+
             await payload.create({
               collection: "orders",
               data: {
                 stripeCheckoutSessionId: data.id,
                 user: user.id,
-                product: item.price.product.metadata.id,
+                product: product.id,
                 name: item.price.product.name,
+                tenant: tenantId,
               },
             });
           }
@@ -99,6 +124,7 @@ export async function POST(request: Request) {
       );
     }
   }
+
   return NextResponse.json(
     {
       message: "Webhook event processed successfully",
