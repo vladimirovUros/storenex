@@ -171,6 +171,7 @@ export async function POST(request: Request) {
                 product: product.id,
                 name: item.price.product.name,
                 tenant: tenantId, // Dodaj tenant field za multi-tenant
+                stripeAccountId: event.account,
               },
               overrideAccess: true,
             });

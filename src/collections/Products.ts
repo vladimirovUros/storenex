@@ -17,7 +17,7 @@ export const Products: CollectionConfig = {
 
       return Boolean(tenant?.stripeDetailsSubmitted); //zabrana tenantima da kreiraju proizvode osim ako nisu popunili stripe podatke
     },
-    update: ({ req }) => isSuperAdmin(req.user),
+    // update: ({ req }) => isSuperAdmin(req.user),
     delete: ({ req }) => isSuperAdmin(req.user),
   },
   fields: [
@@ -76,6 +76,16 @@ export const Products: CollectionConfig = {
       admin: {
         description:
           "Protected content, only visible to customers after purchase. Add product documentation, downloadable files, getting started guides, and bonus materials. Supports Markdown formatting.",
+      },
+    },
+    {
+      name: "isArchived",
+      label: "Archive",
+      defaultValue: false,
+      type: "checkbox",
+      admin: {
+        description:
+          "If checked, the product will be archived and no longer visible in the storefront.",
       },
     },
   ],
