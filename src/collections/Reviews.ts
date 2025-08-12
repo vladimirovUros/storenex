@@ -5,8 +5,8 @@ export const Reviews: CollectionConfig = {
   slug: "reviews",
   access: {
     create: ({ req }) => {
-      // Allow only authenticated users to create reviews
-      return Boolean(req.user);
+      // Allow only super admins to create reviews
+      return isSuperAdmin(req.user);
     },
     read: ({ req }) => {
       // Super admin can see all reviews

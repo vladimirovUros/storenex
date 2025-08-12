@@ -51,6 +51,10 @@ export const Orders: CollectionConfig = {
       return false;
     },
     create: ({ req }) => {
+      // Allow webhook system calls (when no user context)
+      if (!req.user) {
+        return true;
+      }
       return isSuperAdmin(req.user);
     },
     update: ({ req }) => {

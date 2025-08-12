@@ -6,6 +6,7 @@ export const Products: CollectionConfig = {
   slug: "products",
   admin: {
     useAsTitle: "name",
+    description: "You need to verify your account before creating products.",
     defaultColumns: ["id", "name", "description", "price", "createdAt"],
   },
   access: {
