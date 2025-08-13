@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useState } from "react";
 import { toast } from "sonner";
+import { RichText } from "@payloadcms/richtext-lexical/react";
 
 // import { CartButton } from "../components/cart-button";
 
@@ -104,7 +105,7 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
             </div>
             <div className="p-6">
               {data.description ? (
-                <p>{data.description}</p>
+                <RichText data={data.description} />
               ) : (
                 <p className="font-medium text-muted-foreground italic">
                   No description provided

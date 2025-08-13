@@ -190,6 +190,7 @@ export interface Tenant {
 export interface Media {
   id: string;
   alt: string;
+  tenants?: (string | Tenant)[] | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -232,7 +233,21 @@ export interface Product {
   id: string;
   tenant?: (string | null) | Tenant;
   name: string;
-  description?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   /**
    * Price in USD, rounded to the nearest whole number.
    */
@@ -242,9 +257,25 @@ export interface Product {
   image?: (string | null) | Media;
   refundPolicy?: ('30-days' | '14-days' | '7-days' | '3-days' | '1-day' | 'no-refunds') | null;
   /**
-   * Protected content, only visible to customers after purchase. Add product documentation, downloadable files, getting started guides, and bonus materials. Supports Markdown formatting.
+   * Protected content, only visible to customers after purchase. Add product documentation, downloadable files, getting started guides, and bonus materials.
+   *
+   * 	 🔥 WORKFLOW -  IMPORTANT: → 1) First upload media file via Media tab, then add it here! → 2) Add them here using upload button in editor
    */
-  content?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   /**
    * If checked, the product will be archived and no longer visible in the storefront.
    */
@@ -415,6 +446,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  tenants?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
