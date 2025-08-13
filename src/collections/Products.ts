@@ -88,5 +88,15 @@ export const Products: CollectionConfig = {
           "If checked, the product will be archived and no longer visible in the storefront.",
       },
     },
+    {
+      name: "isPrivate",
+      label: "Private",
+      defaultValue: false,
+      type: "checkbox",
+      admin: {
+        description:
+          "If checked, this product will not be shown publicly on the storefront, it will be shown in the user's store.",
+      },
+    },
   ],
 };
