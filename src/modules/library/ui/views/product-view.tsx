@@ -15,40 +15,62 @@ interface Props {
 
 // Funkcija za čišćenje RichText podataka
 const cleanRichTextData = (
-  data: any
-): { cleanedData: any; hasErrors: boolean } => {
-  if (!data || !data.root || !data.root.children) {
+  data: unknown
+): { cleanedData: unknown; hasErrors: boolean } => {
+  if (!data || typeof data !== "object" || data === null) {
+    return { cleanedData: data, hasErrors: false };
+  }
+
+  const dataObj = data as Record<string, unknown>;
+  if (
+    !dataObj.root ||
+    typeof dataObj.root !== "object" ||
+    dataObj.root === null
+  ) {
+    return { cleanedData: data, hasErrors: false };
+  }
+
+  const rootObj = dataObj.root as Record<string, unknown>;
+  if (!Array.isArray(rootObj.children)) {
     return { cleanedData: data, hasErrors: false };
   }
 
   let hasErrors = false;
 
-  const cleanNode = (node: any): any => {
-    if (!node) return node;
+  const cleanNode = (node: unknown): unknown => {
+    if (!node || typeof node !== "object" || node === null) return node;
+
+    const nodeObj = node as Record<string, unknown>;
 
     // Ako je upload node i nema relationship ili je null
-    if (node.type === "upload" && (!node.value || !node.value.id)) {
+    if (
+      nodeObj.type === "upload" &&
+      (!nodeObj.value ||
+        (typeof nodeObj.value === "object" &&
+          nodeObj.value !== null &&
+          !(nodeObj.value as Record<string, unknown>).id))
+    ) {
       hasErrors = true;
       return null; // Uklanjamo problematičan node
     }
 
     // Rekurzivno čisti children
-    if (node.children && Array.isArray(node.children)) {
-      node.children = node.children
+    if (Array.isArray(nodeObj.children)) {
+      nodeObj.children = nodeObj.children
         .map(cleanNode)
-        .filter((child: any) => child !== null);
+        .filter((child: unknown) => child !== null);
     }
 
     return node;
   };
 
   const cleanedData = {
-    ...data,
+    ...dataObj,
     root: {
-      ...data.root,
-      children: data.root.children
+      ...rootObj,
+      children: rootObj.children
         .map(cleanNode)
-        .filter((child: any) => child !== null),
+        .filter((child: unknown) => child !== null),
     },
   };
 
@@ -113,7 +135,8 @@ export const ProductView = ({ productId }: Props) => {
                         </div>
                       </div>
                       <div className="prose max-w-none">
-                        <RichText data={cleanedData} />
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                        <RichText data={cleanedData as any} />
                       </div>
                     </div>
                   );
@@ -121,7 +144,8 @@ export const ProductView = ({ productId }: Props) => {
 
                 return (
                   <div className="prose max-w-none">
-                    <RichText data={cleanedData} />
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                    <RichText data={cleanedData as any} />
                   </div>
                 );
               })()

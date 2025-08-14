@@ -1,4 +1,4 @@
-import type { CollectionConfig } from "payload";
+import type { CollectionConfig, Where } from "payload";
 import { isSuperAdmin } from "@/lib/access";
 
 export const Orders: CollectionConfig = {
@@ -16,7 +16,7 @@ export const Orders: CollectionConfig = {
 
       if (req.user) {
         // Za obične usere - kombinujemo user i tenant logiku
-        const conditions: any[] = [
+        const conditions: Where[] = [
           // Svoje kupljene ordere
           {
             user: {

@@ -67,8 +67,10 @@ export const SignInView = () => {
       onError: (error) => {
         // console.log("Registration failed:", error);
         const errorMessage =
-          (error as any)?.shape?.message ??
-          (error as any).message ??
+          (error as { shape?: { message?: string }; message?: string })?.shape
+            ?.message ??
+          (error as { shape?: { message?: string }; message?: string })
+            .message ??
           "Failed to log in. Please try again later.";
 
         console.log("Login error:", error);
@@ -189,7 +191,7 @@ export const SignInView = () => {
               </Link>
             </p>
             <p className="text-sm text-gray-500">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/sign-up" className="text-orange-500 hover:underline">
                 Sign up
               </Link>

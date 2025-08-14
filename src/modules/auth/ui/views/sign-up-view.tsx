@@ -68,8 +68,10 @@ export const SignUpView = () => {
       onError: (error) => {
         // console.log("Registration failed:", error);!!!!!!!!!!!!!!!!!!!!!
         const errorMessage =
-          (error as any)?.shape?.message ??
-          (error as any).message ??
+          (error as { shape?: { message?: string }; message?: string })?.shape
+            ?.message ??
+          (error as { shape?: { message?: string }; message?: string })
+            .message ??
           "Failed to create account. Please try again.";
 
         // Ručno postavi grešku na polje, ako je poznata

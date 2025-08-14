@@ -6,7 +6,28 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function generateTenantURL(tenantSlug: string) {
-  return `/tenants/${tenantSlug}`;
+  const nodeEnv = process.env.NODE_ENV;
+
+  //In development mode, user normal routing
+
+  if (nodeEnv === "development") {
+    return `${process.env.NEXT_PUBLIC_API_URL}/tenants/${tenantSlug}`;
+  }
+  const protocol = "https";
+  const domain = process.env.NEXT_PUBLIC_ROOT_DOMAIN!;
+
+  // if (process.env.NODE_ENV === "development") {
+  //   protocol = "http";
+  // }
+
+  // In production, use subdomain routing
+  if (!domain) {
+    throw new Error(
+      "NEXT_PUBLIC_ROOT_DOMAIN is not defined in environment variables"
+    );
+  }
+
+  return `${protocol}://${tenantSlug}.${domain}`;
 }
 
 export function formatCurrency(value: number | string) {
