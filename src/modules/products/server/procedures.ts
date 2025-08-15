@@ -121,6 +121,7 @@ export const productsRouter = createTRPCRouter({
       z.object({
         cursor: z.number().default(1),
         limit: z.number().default(DEFAULT_LIMIT),
+        search: z.string().nullable().optional(),
         category: z.string().nullable().optional(),
         minPrice: z.string().nullable().optional(),
         maxPrice: z.string().nullable().optional(),
@@ -131,68 +132,43 @@ export const productsRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const where: Where = {
-        isArchived: {
-          not_equals: true,
-        },
+        isArchived: { not_equals: true },
       };
       const min = parseFloat(input.minPrice ?? "");
       const max = parseFloat(input.maxPrice ?? "");
 
-      let sort: Sort = "-createdAt"; // Default sort
+      let sort: Sort = "-createdAt";
+      if (input.sort === "curated") sort = "-createdAt";
+      else if (input.sort === "hot_and_new") sort = "+createdAt";
+      else if (input.sort === "trending") sort = "-createdAt";
 
-      if (input.sort === "curated") {
-        sort = "-createdAt"; // Default sort for curated
-      } else if (input.sort === "hot_and_new") {
-        sort = "+createdAt"; // Sort by creation date for hot and new
-      } else if (input.sort === "trending") {
-        sort = "-createdAt";
-      }
-
-      //Backend validation for minPrice and maxPrice
       if (!isNaN(min) && !isNaN(max) && min > max) {
         throw new Error("Minimum price cannot be greater than maximum price.");
       }
+
       const priceFilter: Record<string, number> = {};
-      if (!isNaN(min)) {
-        priceFilter.greater_than_equal = min;
-      }
-      if (!isNaN(max)) {
-        priceFilter.less_than_equal = max;
-      }
-      if (Object.keys(priceFilter).length > 0) {
-        where.price = priceFilter;
-      }
+      if (!isNaN(min)) priceFilter.greater_than_equal = min;
+      if (!isNaN(max)) priceFilter.less_than_equal = max;
+      if (Object.keys(priceFilter).length > 0) where.price = priceFilter;
 
       if (input.tenantSlug) {
-        where["tenant.slug"] = {
-          equals: input.tenantSlug,
-        };
+        where["tenant.slug"] = { equals: input.tenantSlug };
       } else {
-        //If we are loading products for public storefront (no tenantSlug)
-        //Make sure to not load products set to "isPrivate: true" (using reverse not_equals logic)
-        //These products are exclusively private to the tenant store
-        where["isPrivate"] = {
-          not_equals: true,
-        };
+        where["isPrivate"] = { not_equals: true };
       }
 
       if (input.category) {
         const categoriesData = await ctx.dataBase.find({
           collection: "categories",
           limit: 1,
-          depth: 1, //Populate subcategories, subcategories.[0] will be a type of "Category"
+          depth: 1,
           pagination: false,
-          where: {
-            slug: {
-              equals: input.category,
-            },
-          },
+          where: { slug: { equals: input.category } },
         });
 
         const formattedData = categoriesData.docs.map((doc) => ({
           ...doc,
           subcategories: (doc.subcategories?.docs ?? []).map((doc) => ({
-            //Because of 'depth: 1' i know "doc" will be a type of "Category"
             ...(doc as Category),
             subcategories: undefined,
           })),
@@ -200,12 +176,9 @@ export const productsRouter = createTRPCRouter({
 
         const subcategoriesSlugs = [];
         const parentCategory = formattedData[0];
-
         if (parentCategory) {
           subcategoriesSlugs.push(
-            ...parentCategory.subcategories.map(
-              (subcategories) => subcategories.slug
-            )
+            ...parentCategory.subcategories.map((sub) => sub.slug)
           );
           where["category.slug"] = {
             in: [parentCategory.slug, ...subcategoriesSlugs],
@@ -214,35 +187,85 @@ export const productsRouter = createTRPCRouter({
       }
 
       if (input.tags && input.tags.length > 0) {
-        where["tags.name"] = {
-          in: input.tags,
-        };
+        where["tags.name"] = { in: input.tags };
+      }
+
+      // 🔹 Advanced search (bez description)
+      const searchValue = input.search?.trim();
+      if (searchValue) {
+        const words = searchValue.split(/\s+/);
+        const makeLikeConditions = (field: string) =>
+          words.map((word) => ({ [field]: { like: word } }));
+
+        if (words.length > 1) {
+          where["or"] = [
+            { and: makeLikeConditions("name") },
+            { and: makeLikeConditions("tags.name") },
+            { and: makeLikeConditions("category.name") },
+          ];
+        } else {
+          where["or"] = [
+            { name: { contains: searchValue } },
+            { name: { like: searchValue } },
+            { "tags.name": { contains: searchValue } },
+            { "tags.name": { like: searchValue } },
+            { "category.name": { contains: searchValue } },
+            { "category.name": { like: searchValue } },
+          ];
+        }
       }
 
       const payload = ctx.dataBase;
+      const fetchLimit = input.limit * 3;
       const data = await payload.find({
         collection: "products",
-        depth: 2, //Populate "category", & "image", "tenant" & "tenant.image"
+        depth: 2,
         where,
         sort,
         page: input.cursor,
-        limit: input.limit,
-        select: {
-          content: false,
-        },
-        // pagination: true,
+        limit: fetchLimit,
+        select: { content: false },
       });
+
+      // 🔹 Weighted scoring (title > tags > category)
+      if (searchValue) {
+        const words = searchValue.split(/\s+/);
+        const dataWithScore = data.docs.map((doc) => {
+          let score = 0;
+          const titleLower = doc.name?.toLowerCase() || "";
+
+          words.forEach((word) => {
+            const w = word.toLowerCase();
+            if (titleLower.includes(w)) score += 4;
+
+            if (Array.isArray(doc.tags) && doc.tags.length) {
+              doc.tags.forEach((tag) => {
+                const tagName = typeof tag === "string" ? tag : tag.name;
+                if (tagName?.toLowerCase().includes(w)) score += 1;
+              });
+            }
+
+            const categoryName =
+              typeof doc.category === "string"
+                ? doc.category
+                : doc.category?.name;
+            if (categoryName?.toLowerCase().includes(w)) score += 0.5;
+          });
+
+          return { ...doc, score };
+        });
+
+        data.docs = dataWithScore
+          .sort((a, b) => b.score - a.score)
+          .slice(0, input.limit);
+      }
 
       const productIds = data.docs.map((doc) => doc.id);
 
       const allReviewsData = await ctx.dataBase.find({
         collection: "reviews",
         pagination: false,
-        where: {
-          product: {
-            in: productIds,
-          },
-        },
+        where: { product: { in: productIds } },
       });
 
       const reviewsByProductId = allReviewsData.docs.reduce(
@@ -251,9 +274,7 @@ export const productsRouter = createTRPCRouter({
             typeof review.product === "string"
               ? review.product
               : review.product.id;
-          if (!acc[productId]) {
-            acc[productId] = [];
-          }
+          if (!acc[productId]) acc[productId] = [];
           acc[productId].push(review);
           return acc;
         },
@@ -269,11 +290,7 @@ export const productsRouter = createTRPCRouter({
             : productReviews.reduce((acc, review) => acc + review.rating, 0) /
               reviewCount;
 
-        return {
-          ...doc,
-          reviewCount,
-          reviewRating,
-        };
+        return { ...doc, reviewCount, reviewRating };
       });
 
       return {

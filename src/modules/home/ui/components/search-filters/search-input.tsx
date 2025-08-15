@@ -1,5 +1,3 @@
-"use client";
-
 import { Input } from "@/components/ui/input";
 import { BookmarkCheckIcon, ListFilterIcon, SearchIcon } from "lucide-react";
 import { CategoriesSidebar } from "./categories-sidebar";
@@ -12,13 +10,19 @@ import Link from "next/link";
 interface SearchFiltersProps {
   disabled?: boolean;
   placeholder?: string;
+  defaultValue?: string | undefined;
+  onChange?: (value: string) => void;
 }
 export const SearchInput = ({
   disabled = false,
   placeholder = "Search...",
+  defaultValue,
+  onChange,
 }: SearchFiltersProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [searchValue, setSearchValue] = useState(defaultValue || "");
+  const debounceDelay = 500;
 
   const trpc = useTRPC();
   const session = useQuery(trpc.auth.session.queryOptions());
@@ -26,6 +30,16 @@ export const SearchInput = ({
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      onChange?.(searchValue);
+    }, debounceDelay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchValue, onChange]);
 
   return (
     <div className="flex items-center gap-2 w-full">
@@ -37,6 +51,8 @@ export const SearchInput = ({
           disabled={disabled}
           placeholder={placeholder}
           className="pl-8"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
         />
       </div>
       <Button
