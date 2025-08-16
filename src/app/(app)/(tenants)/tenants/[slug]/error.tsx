@@ -106,9 +106,9 @@ export default function TenantError({ error, reset }: Props) {
         <div style={cardStyle}>
           <h2 style={titleStyle}>🏪 NOT FOUND!</h2>
           <p style={textStyle}>
-            <strong>STORE DOESN'T EXIST!</strong>
+            <strong>STORE DOESN&apos;T EXIST!</strong>
             <br />
-            Store you are trying to visit doesn't exist.
+            Store you are trying to visit doesn&apos;t exist.
           </p>
           <div style={buttonContainerStyle}>
             <Link
