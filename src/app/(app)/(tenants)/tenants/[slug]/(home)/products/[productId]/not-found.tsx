@@ -1,22 +1,16 @@
 "use client";
 
-import { TRPCClientError } from "@trpc/client";
 import Link from "next/link";
 
-interface Props {
-  error: Error & { digest?: string };
-  reset: () => void;
-}
-
-export default function ProductError({ error, reset }: Props) {
-  // Neobrutalist stilovi - kompaktna verzija kao na slici
+export default function ProductNotFound() {
+  // Neobrutalist stilovi konzistentni sa error.tsx
   const containerStyle = {
     position: "fixed" as const,
     top: 0,
     left: 0,
     width: "100vw",
     height: "100vh",
-    backgroundColor: "#fef7cd", // svetlo žuta pozadina preko celog ekrana
+    backgroundColor: "#fef7cd", // svetlo žuta pozadina
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -90,12 +84,6 @@ export default function ProductError({ error, reset }: Props) {
     transform: "rotate(1deg)",
   };
 
-  const retryButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: "#ef4444", // red
-    transform: "rotate(1deg)",
-  };
-
   // Inline hover effects
   const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
     const target = e.target as HTMLElement;
@@ -117,68 +105,28 @@ export default function ProductError({ error, reset }: Props) {
     target.style.boxShadow = "4px 4px 0px black";
   };
 
-  // Check for product not found (either NOT_FOUND code or "Not Found" message)
-  if (
-    error instanceof TRPCClientError &&
-    (error.data?.code === "NOT_FOUND" ||
-      (error.data?.code === "INTERNAL_SERVER_ERROR" &&
-        error.message === "Not Found"))
-  ) {
-    return (
-      <div style={containerStyle}>
-        <div style={cardStyle}>
-          <div style={triangleStyle}>⚠</div>
-          <h2 style={titleStyle}>PRODUCT NOT FOUND!</h2>
-          <p style={textStyle}>This product is no longer available.</p>
-          <div style={buttonContainerStyle}>
-            <button
-              onClick={() => window.history.back()}
-              style={buttonStyle}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              ← GO BACK
-            </button>
-            <Link
-              href="/"
-              style={secondaryButtonStyle}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              🏠 HOME
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // For other errors, use your existing style but more specific
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
-        <h2 style={titleStyle}>💥 CRASH!</h2>
-        <p style={textStyle}>
-          <strong>SYSTEM ERROR!</strong>
-          <br />
-          Something exploded in the code matrix!
-        </p>
+        <div style={triangleStyle}>⚠</div>
+        <h2 style={titleStyle}>PRODUCT NOT FOUND!</h2>
+        <p style={textStyle}>This product is no longer available.</p>
         <div style={buttonContainerStyle}>
-          <button
-            onClick={reset}
-            style={retryButtonStyle}
+          <Link
+            href="/"
+            style={buttonStyle}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            🔄 RETRY MISSION
-          </button>
+            🏠 GO HOME
+          </Link>
           <Link
             href="/"
             style={secondaryButtonStyle}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            🏠 GO HOME
+            🛍️ BROWSE PRODUCTS
           </Link>
         </div>
       </div>

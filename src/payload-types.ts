@@ -190,6 +190,10 @@ export interface Tenant {
 export interface Media {
   id: string;
   alt: string;
+  /**
+   * Allow public access to this media file
+   */
+  isPublic?: boolean | null;
   tenants?: (string | Tenant)[] | null;
   updatedAt: string;
   createdAt: string;
@@ -446,6 +450,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  isPublic?: T;
   tenants?: T;
   updatedAt?: T;
   createdAt?: T;

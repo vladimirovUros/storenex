@@ -8,21 +8,15 @@ interface Props {
   reset: () => void;
 }
 
-export default function ProductError({ error, reset }: Props) {
-  // Neobrutalist stilovi - kompaktna verzija kao na slici
+export default function LibraryProductError({ error, reset }: Props) {
   const containerStyle = {
-    position: "fixed" as const,
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: "#fef7cd", // svetlo žuta pozadina preko celog ekrana
+    minHeight: "100vh",
+    backgroundColor: "#fef7cd",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontFamily: "system-ui, -apple-system, monospace",
     padding: "1rem",
-    zIndex: 9999,
   };
 
   const cardStyle = {
@@ -33,13 +27,6 @@ export default function ProductError({ error, reset }: Props) {
     border: "4px solid black",
     boxShadow: "8px 8px 0px black",
     transform: "rotate(-1deg)",
-  };
-
-  const triangleStyle = {
-    fontSize: "3rem",
-    color: "#fbbf24", // žuta boja
-    marginBottom: "1rem",
-    display: "block",
   };
 
   const titleStyle = {
@@ -60,15 +47,8 @@ export default function ProductError({ error, reset }: Props) {
     lineHeight: "1.4",
   };
 
-  const buttonContainerStyle = {
-    display: "flex",
-    gap: "1rem",
-    justifyContent: "center",
-    flexWrap: "wrap" as const,
-  };
-
   const buttonStyle = {
-    backgroundColor: "#06b6d4", // teal
+    backgroundColor: "#06b6d4",
     color: "white",
     padding: "0.75rem 1.5rem",
     border: "3px solid black",
@@ -82,21 +62,16 @@ export default function ProductError({ error, reset }: Props) {
     letterSpacing: "0.05em",
     transition: "all 0.1s ease",
     transform: "rotate(-1deg)",
+    marginRight: "1rem",
   };
 
   const secondaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "#22c55e", // green
+    backgroundColor: "#22c55e",
     transform: "rotate(1deg)",
+    marginRight: "0",
   };
 
-  const retryButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: "#ef4444", // red
-    transform: "rotate(1deg)",
-  };
-
-  // Inline hover effects
   const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
     const target = e.target as HTMLElement;
     target.style.transform = target.style.transform.includes("rotate")
@@ -117,28 +92,31 @@ export default function ProductError({ error, reset }: Props) {
     target.style.boxShadow = "4px 4px 0px black";
   };
 
-  // Check for product not found (either NOT_FOUND code or "Not Found" message)
-  if (
-    error instanceof TRPCClientError &&
-    (error.data?.code === "NOT_FOUND" ||
-      (error.data?.code === "INTERNAL_SERVER_ERROR" &&
-        error.message === "Not Found"))
-  ) {
+  // Unauthorized access to library
+  if (error instanceof TRPCClientError && error.data?.code === "UNAUTHORIZED") {
     return (
       <div style={containerStyle}>
         <div style={cardStyle}>
-          <div style={triangleStyle}>⚠</div>
-          <h2 style={titleStyle}>PRODUCT NOT FOUND!</h2>
-          <p style={textStyle}>This product is no longer available.</p>
-          <div style={buttonContainerStyle}>
-            <button
-              onClick={() => window.history.back()}
+          <h2 style={titleStyle}>🔒 ACCESS DENIED!</h2>
+          <p style={textStyle}>
+            You need to be logged in to access your library!
+          </p>
+          <div
+            style={{
+              display: "flex",
+              gap: "1rem",
+              justifyContent: "center",
+              flexWrap: "wrap" as const,
+            }}
+          >
+            <Link
+              href="/sign-in"
               style={buttonStyle}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              ← GO BACK
-            </button>
+              🔐 LOG IN
+            </Link>
             <Link
               href="/"
               style={secondaryButtonStyle}
@@ -153,32 +131,74 @@ export default function ProductError({ error, reset }: Props) {
     );
   }
 
-  // For other errors, use your existing style but more specific
+  // Product not found in library (not purchased)
+  if (error instanceof TRPCClientError && error.data?.code === "NOT_FOUND") {
+    return (
+      <div style={containerStyle}>
+        <div style={cardStyle}>
+          <h2 style={titleStyle}>📚 NOT FOUND!</h2>
+          <p style={textStyle}>
+            This product is not in your library. You need to purchase it first!
+          </p>
+          <div
+            style={{
+              display: "flex",
+              gap: "1rem",
+              justifyContent: "center",
+              flexWrap: "wrap" as const,
+            }}
+          >
+            <Link
+              href="/"
+              style={buttonStyle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              🛍️ SHOP NOW
+            </Link>
+            <Link
+              href="/library"
+              style={secondaryButtonStyle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              📚 MY LIBRARY
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Other errors
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
-        <h2 style={titleStyle}>💥 CRASH!</h2>
-        <p style={textStyle}>
-          <strong>SYSTEM ERROR!</strong>
-          <br />
-          Something exploded in the code matrix!
-        </p>
-        <div style={buttonContainerStyle}>
+        <h2 style={titleStyle}>💥 LIBRARY ERROR!</h2>
+        <p style={textStyle}>Something went wrong accessing your library!</p>
+        <div
+          style={{
+            display: "flex",
+            gap: "1rem",
+            justifyContent: "center",
+            flexWrap: "wrap" as const,
+          }}
+        >
           <button
             onClick={reset}
-            style={retryButtonStyle}
+            style={buttonStyle}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            🔄 RETRY MISSION
+            🔄 TRY AGAIN
           </button>
           <Link
-            href="/"
+            href="/library"
             style={secondaryButtonStyle}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            🏠 GO HOME
+            📚 MY LIBRARY
           </Link>
         </div>
       </div>

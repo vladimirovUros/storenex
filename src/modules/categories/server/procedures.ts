@@ -2,6 +2,7 @@
 // import { getPayload } from "payload"; ovo SAD NE TREBA JER SAM U INIT.TS PROMENIO baseProcedure DA NE BIH MORAO DA SVUDA PISHEM getPayload({ config: configPromise }) jer se to vec radi u baseProcedure
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { Category } from "@/payload-types";
+import z from "zod";
 
 export const categoriesRouter = createTRPCRouter({
   getMany: baseProcedure.query(async ({ ctx }) => {
@@ -28,4 +29,55 @@ export const categoriesRouter = createTRPCRouter({
     // For demonstration, we return a static list of categories
     return formattedData;
   }),
+  validateSubcategory: baseProcedure
+    .input(
+      z.object({
+        category: z.string(),
+        subcategory: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const payload = ctx.dataBase;
+
+      // Find parent category
+      const parentCategoryData = await payload.find({
+        collection: "categories",
+        limit: 1,
+        depth: 1,
+        pagination: false,
+        where: {
+          slug: {
+            equals: input.category,
+          },
+          parent: {
+            exists: false,
+          },
+        },
+      });
+
+      const parentCategory = parentCategoryData.docs[0];
+      if (!parentCategory) {
+        return { isValid: false, parentExists: false };
+      }
+
+      // Check if subcategory exists and belongs to parent
+      const subcategories = (parentCategory.subcategories?.docs ?? []).map(
+        (doc) => ({
+          ...(doc as Category),
+        })
+      );
+
+      const subcategoryExists = subcategories.some(
+        (subcat) => subcat.slug === input.subcategory
+      );
+
+      return {
+        isValid: subcategoryExists,
+        parentExists: true,
+        parentCategory: {
+          slug: parentCategory.slug,
+          name: parentCategory.name,
+        },
+      };
+    }),
 });

@@ -8,44 +8,32 @@ interface Props {
   reset: () => void;
 }
 
-export default function ProductError({ error, reset }: Props) {
-  // Neobrutalist stilovi - kompaktna verzija kao na slici
+export default function TenantError({ error, reset }: Props) {
+  // Neobrutalist stilovi kao globalni error
   const containerStyle = {
-    position: "fixed" as const,
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: "#fef7cd", // svetlo žuta pozadina preko celog ekrana
+    minHeight: "100vh",
+    backgroundColor: "#fef7cd", // svetlo žuta pozadina
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontFamily: "system-ui, -apple-system, monospace",
     padding: "1rem",
-    zIndex: 9999,
   };
 
   const cardStyle = {
     textAlign: "center" as const,
-    maxWidth: "24rem",
-    padding: "2.5rem",
+    maxWidth: "32rem",
+    padding: "3rem",
     backgroundColor: "white",
     border: "4px solid black",
     boxShadow: "8px 8px 0px black",
     transform: "rotate(-1deg)",
   };
 
-  const triangleStyle = {
-    fontSize: "3rem",
-    color: "#fbbf24", // žuta boja
-    marginBottom: "1rem",
-    display: "block",
-  };
-
   const titleStyle = {
-    fontSize: "1.8rem",
+    fontSize: "2.5rem",
     fontWeight: "900",
-    marginBottom: "1rem",
+    marginBottom: "1.5rem",
     color: "black",
     textTransform: "uppercase" as const,
     letterSpacing: "0.05em",
@@ -53,11 +41,11 @@ export default function ProductError({ error, reset }: Props) {
   };
 
   const textStyle = {
-    color: "#6b7280",
+    color: "#374151",
     marginBottom: "2rem",
-    fontSize: "1rem",
-    fontWeight: "500",
-    lineHeight: "1.4",
+    fontSize: "1.1rem",
+    fontWeight: "600",
+    lineHeight: "1.6",
   };
 
   const buttonContainerStyle = {
@@ -70,7 +58,7 @@ export default function ProductError({ error, reset }: Props) {
   const buttonStyle = {
     backgroundColor: "#06b6d4", // teal
     color: "white",
-    padding: "0.75rem 1.5rem",
+    padding: "1rem 2rem",
     border: "3px solid black",
     boxShadow: "4px 4px 0px black",
     textDecoration: "none",
@@ -78,22 +66,16 @@ export default function ProductError({ error, reset }: Props) {
     cursor: "pointer",
     fontWeight: "800",
     textTransform: "uppercase" as const,
-    fontSize: "0.8rem",
+    fontSize: "0.9rem",
     letterSpacing: "0.05em",
     transition: "all 0.1s ease",
-    transform: "rotate(-1deg)",
+    transform: "rotate(1deg)",
   };
 
   const secondaryButtonStyle = {
     ...buttonStyle,
     backgroundColor: "#22c55e", // green
-    transform: "rotate(1deg)",
-  };
-
-  const retryButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: "#ef4444", // red
-    transform: "rotate(1deg)",
+    transform: "rotate(-1deg)",
   };
 
   // Inline hover effects
@@ -117,35 +99,33 @@ export default function ProductError({ error, reset }: Props) {
     target.style.boxShadow = "4px 4px 0px black";
   };
 
-  // Check for product not found (either NOT_FOUND code or "Not Found" message)
-  if (
-    error instanceof TRPCClientError &&
-    (error.data?.code === "NOT_FOUND" ||
-      (error.data?.code === "INTERNAL_SERVER_ERROR" &&
-        error.message === "Not Found"))
-  ) {
+  // Check if it's a TRPC "NOT_FOUND" error for tenant
+  if (error instanceof TRPCClientError && error.data?.code === "NOT_FOUND") {
     return (
       <div style={containerStyle}>
         <div style={cardStyle}>
-          <div style={triangleStyle}>⚠</div>
-          <h2 style={titleStyle}>PRODUCT NOT FOUND!</h2>
-          <p style={textStyle}>This product is no longer available.</p>
+          <h2 style={titleStyle}>🏪 NOT FOUND!</h2>
+          <p style={textStyle}>
+            <strong>STORE DOESN'T EXIST!</strong>
+            <br />
+            Store you are trying to visit doesn't exist.
+          </p>
           <div style={buttonContainerStyle}>
-            <button
-              onClick={() => window.history.back()}
+            <Link
+              href="/"
               style={buttonStyle}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              ← GO BACK
-            </button>
+              🏠 GO HOME
+            </Link>
             <Link
               href="/"
               style={secondaryButtonStyle}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              🏠 HOME
+              🛍️ BROWSE STORES
             </Link>
           </div>
         </div>
@@ -153,24 +133,24 @@ export default function ProductError({ error, reset }: Props) {
     );
   }
 
-  // For other errors, use your existing style but more specific
+  // For other tenant-related errors
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
-        <h2 style={titleStyle}>💥 CRASH!</h2>
+        <h2 style={titleStyle}>🛑 STORE ERROR!</h2>
         <p style={textStyle}>
-          <strong>SYSTEM ERROR!</strong>
+          <strong>SOMETHING WENT WRONG!</strong>
           <br />
-          Something exploded in the code matrix!
+          The store encountered a technical problem!
         </p>
         <div style={buttonContainerStyle}>
           <button
             onClick={reset}
-            style={retryButtonStyle}
+            style={buttonStyle}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            🔄 RETRY MISSION
+            🔄 TRY AGAIN
           </button>
           <Link
             href="/"

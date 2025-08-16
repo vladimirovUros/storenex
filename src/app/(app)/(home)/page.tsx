@@ -6,6 +6,7 @@ import { getQueryClient, trpc } from "@/trpc/server";
 
 import { loadProductFilters } from "@/modules/products/search-params";
 import { ProductListView } from "@/modules/products/ui/views/product-list-view";
+import { SubcategoryRedirectToast } from "@/components/subcategory-redirect-toast";
 interface Props {
   searchParams: Promise<SearchParams>;
 }
@@ -24,6 +25,7 @@ const Page = async ({ searchParams }: Props) => {
   );
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <SubcategoryRedirectToast />
       <ProductListView />
     </HydrationBoundary>
   );
