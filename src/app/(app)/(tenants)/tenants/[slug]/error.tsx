@@ -108,7 +108,7 @@ export default function TenantError({ error, reset }: Props) {
           <p style={textStyle}>
             <strong>UNFORTUNATELY</strong>
             <br />
-            This store doesn't exist or has been moved
+            This store doesn &apos;t exist or has been moved
           </p>
           <div style={buttonContainerStyle}>
             <Link
