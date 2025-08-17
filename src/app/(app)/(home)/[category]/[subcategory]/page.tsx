@@ -9,6 +9,7 @@ import configPromise from "@payload-config";
 import { getPayload } from "payload";
 
 interface Props {
+  // params: Promise<{ subcategory: string }>;
   params: Promise<{ category: string; subcategory: string }>;
   searchParams: Promise<SearchParams>;
 }
@@ -16,6 +17,7 @@ interface Props {
 export const dynamic = "force-dynamic";
 
 const Page = async ({ params, searchParams }: Props) => {
+  // const { subcategory } = await params;
   const { category, subcategory } = await params;
   const filters = await loadProductFilters(searchParams);
 

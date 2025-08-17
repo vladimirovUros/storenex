@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function TenantError({ error, reset }: Props) {
-  // Neobrutalist stilovi kao globalni error
+  // Neobrutalist stilovi - isti kao vaši postojeći
   const containerStyle = {
     minHeight: "100vh",
     backgroundColor: "#fef7cd", // svetlo žuta pozadina
@@ -56,7 +56,7 @@ export default function TenantError({ error, reset }: Props) {
   };
 
   const buttonStyle = {
-    backgroundColor: "#06b6d4", // teal
+    backgroundColor: "#ef4444", // crvena
     color: "white",
     padding: "1rem 2rem",
     border: "3px solid black",
@@ -74,7 +74,7 @@ export default function TenantError({ error, reset }: Props) {
 
   const secondaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "#22c55e", // green
+    backgroundColor: "#06b6d4", // teal
     transform: "rotate(-1deg)",
   };
 
@@ -99,16 +99,16 @@ export default function TenantError({ error, reset }: Props) {
     target.style.boxShadow = "4px 4px 0px black";
   };
 
-  // Check if it's a TRPC "NOT_FOUND" error for tenant
+  // Check if it's a TRPC "NOT_FOUND" error (tenant not found)
   if (error instanceof TRPCClientError && error.data?.code === "NOT_FOUND") {
     return (
       <div style={containerStyle}>
         <div style={cardStyle}>
-          <h2 style={titleStyle}>🏪 NOT FOUND!</h2>
+          <h2 style={titleStyle}>🚫 NOT FOUND</h2>
           <p style={textStyle}>
-            <strong>STORE DOESN&apos;T EXIST!</strong>
+            <strong>UNFORTUNATELY</strong>
             <br />
-            Store you are trying to visit doesn&apos;t exist.
+            This store doesn't exist or has been moved
           </p>
           <div style={buttonContainerStyle}>
             <Link
@@ -119,14 +119,14 @@ export default function TenantError({ error, reset }: Props) {
             >
               🏠 GO HOME
             </Link>
-            <Link
-              href="/"
+            <button
+              onClick={() => window.history.back()}
               style={secondaryButtonStyle}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              🛍️ BROWSE STORES
-            </Link>
+              ← GO BACK
+            </button>
           </div>
         </div>
       </div>
@@ -137,11 +137,11 @@ export default function TenantError({ error, reset }: Props) {
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
-        <h2 style={titleStyle}>🛑 STORE ERROR!</h2>
+        <h2 style={titleStyle}>💥 STORE ERROR!</h2>
         <p style={textStyle}>
           <strong>SOMETHING WENT WRONG!</strong>
           <br />
-          The store encountered a technical problem!
+          This store encountered a problem!
         </p>
         <div style={buttonContainerStyle}>
           <button

@@ -21,7 +21,6 @@ export const Media: CollectionConfig = {
           },
         };
       }
-
       // Ako je korisnik ulogovan ali nema tenant, može da vidi sve slike
       return true;
     },
@@ -74,8 +73,6 @@ export const Media: CollectionConfig = {
           // (avatar, product images, itd.)
           data.isPublic = true;
         }
-
-        // Super admin može da kreira bez tenant-a i bira da li je javno
         if (
           operation === "create" &&
           isSuperAdmin(req.user) &&
@@ -83,7 +80,6 @@ export const Media: CollectionConfig = {
         ) {
           data.isPublic = true; // default za super admin
         }
-
         return data;
       },
     ],

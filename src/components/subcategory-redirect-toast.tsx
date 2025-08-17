@@ -14,7 +14,7 @@ export function SubcategoryRedirectToast() {
     // Add slight delay to ensure toast provider is ready
     const timeoutId = setTimeout(() => {
       if (subcategoryNotFound) {
-        toast.error(
+        toast.warning(
           `Subcategory "${subcategoryNotFound}" not found. Instead, showing parent category.`
         );
 
@@ -25,7 +25,7 @@ export function SubcategoryRedirectToast() {
       }
 
       if (categoryNotFound) {
-        toast.error("Category not found. Redirected to home page.");
+        toast.warning("Category not found. Redirected to home page.");
 
         // Remove the parameter from URL without page reload
         const url = new URL(window.location.href);

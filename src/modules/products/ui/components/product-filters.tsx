@@ -53,7 +53,7 @@ export const ProductFilters = ({}) => {
 
   const onClear = () => {
     setFilters({
-      search: "", // Default vrednost kao što je definisano u params
+      search: "",
       minPrice: "",
       maxPrice: "",
       tags: [],
