@@ -30,7 +30,28 @@ export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
         },
         {
           getNextPageParam: (lastPage) => {
-            return lastPage.docs.length > 0 ? lastPage.nextPage : undefined;
+            // Comprehensive safety checks
+            if (!lastPage) {
+              return undefined;
+            }
+
+            // Check if docs exists and is an array
+            if (!lastPage.docs || !Array.isArray(lastPage.docs)) {
+              return undefined;
+            }
+
+            // Check if page exists
+            if (typeof lastPage.page !== "number") {
+              return undefined;
+            }
+
+            // Check if hasNextPage exists and is true
+            if (!lastPage.hasNextPage) {
+              return undefined;
+            }
+
+            // Return next page number
+            return lastPage.page + 1;
           },
         }
       )

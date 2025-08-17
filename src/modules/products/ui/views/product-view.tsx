@@ -48,6 +48,8 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
             src={data.image?.url || "/placeholder.png"}
             alt={data.name}
             fill
+            sizes="100vw"
+            quality={80}
             className="object-cover"
           />
         </div>
@@ -232,6 +234,7 @@ export const ProductViewSkeleton = () => {
             src={"/placeholder.png"}
             alt="Placeholder"
             fill
+            sizes="100vw"
             className="object-cover"
           />
         </div>

@@ -131,7 +131,7 @@ export const libraryRouter = createTRPCRouter({
       });
 
       return {
-        ...productsData,
+        ...ordersData,
         docs: dataWithSummarizeReviews.map((doc) => ({
           ...doc,
           image: doc.image as Media | null,

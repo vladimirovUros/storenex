@@ -7,6 +7,11 @@ import { SearchParams } from "nuqs/server";
 import { redirect } from "next/navigation";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
+import {
+  SearchFilters,
+  SearchFiltersLoading,
+} from "@/modules/home/ui/components/search-filters";
+import { Suspense } from "react";
 
 interface Props {
   // params: Promise<{ subcategory: string }>;
@@ -61,6 +66,10 @@ const Page = async ({ params, searchParams }: Props) => {
   // console.log(JSON.stringify(filters), "THIS IS FROM RSC");
 
   const queryClient = getQueryClient();
+
+  // Prefetch categories for search filters
+  void queryClient.prefetchQuery(trpc.categories.getMany.queryOptions());
+
   void queryClient.prefetchInfiniteQuery(
     trpc.products.getMany.infiniteQueryOptions({
       ...filters,
@@ -70,6 +79,10 @@ const Page = async ({ params, searchParams }: Props) => {
   );
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      {/* Add SearchFilters for subcategory navigation */}
+      <Suspense fallback={<SearchFiltersLoading />}>
+        <SearchFilters />
+      </Suspense>
       <ProductListView category={subcategory} />
     </HydrationBoundary>
   );

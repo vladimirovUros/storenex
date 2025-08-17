@@ -5,6 +5,11 @@ import { loadProductFilters } from "@/modules/products/search-params";
 import { ProductListView } from "@/modules/products/ui/views/product-list-view";
 import { DEFAULT_LIMIT } from "@/constants";
 import { SubcategoryRedirectToast } from "@/components/subcategory-redirect-toast";
+import {
+  SearchFilters,
+  SearchFiltersLoading,
+} from "@/modules/home/ui/components/search-filters";
+import { Suspense } from "react";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
 import { redirect } from "next/navigation";
@@ -45,6 +50,10 @@ const Page = async ({ params, searchParams }: Props) => {
   // console.log(JSON.stringify(filters), "THIS IS FROM RSC");
 
   const queryClient = getQueryClient();
+
+  // Prefetch categories for search filters
+  void queryClient.prefetchQuery(trpc.categories.getMany.queryOptions());
+
   void queryClient.prefetchInfiniteQuery(
     trpc.products.getMany.infiniteQueryOptions({
       ...filters,
@@ -54,6 +63,10 @@ const Page = async ({ params, searchParams }: Props) => {
   );
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      {/* Add SearchFilters for category navigation */}
+      <Suspense fallback={<SearchFiltersLoading />}>
+        <SearchFilters />
+      </Suspense>
       <SubcategoryRedirectToast />
       <ProductListView category={category} />
     </HydrationBoundary>
