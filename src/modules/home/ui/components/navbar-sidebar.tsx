@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { UseQueryResult } from "@tanstack/react-query";
 import {
   Sheet,
   SheetContent,
@@ -8,17 +7,30 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { User } from "@/payload-types";
 
 interface NavbarItem {
   href: string;
   children: React.ReactNode;
 }
+
+// Use the actual structure that session has based on how it's used
+interface SessionQueryResult {
+  data?: {
+    user: User | null;
+  } | null;
+  isSuccess: boolean;
+  isLoading: boolean;
+  error: unknown;
+}
+
 interface Props {
   items: NavbarItem[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  session: UseQueryResult<any, any>;
+  session: SessionQueryResult;
 }
+
 export const NavbarSidebar = ({
   items,
   open,
