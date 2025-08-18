@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCart } from "../../hooks/use-cart";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { generateTenantURL } from "@/lib/utils";
+import { generateTenantURL, redirectToSignIn } from "@/lib/utils";
 import { CheckoutItem } from "../components/checkout-item";
 import { CheckoutSidebar } from "../components/checkout-sidebar";
 import { InboxIcon, LoaderIcon } from "lucide-react";
@@ -39,11 +39,13 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
         window.location.href = data.url;
       },
       onError: (error) => {
-        if (error.data?.code === "UNAUTHORIZED") {
-          //TODO: Modify when subdomains enabled
-          router.push("/sign-in");
-        }
         toast.error(error.message);
+        if (error.data?.code === "UNAUTHORIZED") {
+          // Kašnjenje od 1.5 sekunde da korisnik vidi toast
+          setTimeout(() => {
+            redirectToSignIn();
+          }, 1500);
+        }
       },
     })
   );

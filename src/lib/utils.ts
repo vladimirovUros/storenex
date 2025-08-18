@@ -34,6 +34,24 @@ export function generateTenantURL(tenantSlug: string) {
   return `${protocol}://${tenantSlug}.${domain}`;
 }
 
+export function getSignInURL() {
+  const isDevelopment = process.env.NODE_ENV === "development";
+  const isSubdomainRoutingEnabled =
+    process.env.NEXT_PUBLIC_ENABLE_SUBDOMAIN_ROUTING === "true";
+
+  if (isDevelopment || !isSubdomainRoutingEnabled) {
+    return `${process.env.NEXT_PUBLIC_API_URL}/sign-in`;
+  } else {
+    const protocol = "https";
+    const domain = process.env.NEXT_PUBLIC_ROOT_DOMAIN!;
+    return `${protocol}://${domain}/sign-in`;
+  }
+}
+
+export function redirectToSignIn() {
+  window.location.href = getSignInURL();
+}
+
 export function formatCurrency(value: number | string) {
   const numericValue = Number(value);
 
