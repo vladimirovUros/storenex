@@ -1,4 +1,4 @@
-import { Category, Media, Tenant } from "@/payload-types";
+import { Category, Media, Tenant, Review } from "@/payload-types";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { Sort, Where } from "payload";
 import z from "zod";
@@ -248,7 +248,7 @@ export const productsRouter = createTRPCRouter({
         const productIds = data.docs.map((doc) => doc.id);
 
         // Only fetch reviews if we have products
-        let reviewsByProductId: Record<string, any[]> = {};
+        let reviewsByProductId: Record<string, Review[]> = {};
 
         if (productIds.length > 0) {
           const allReviewsData = await payload.find({

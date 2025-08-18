@@ -7,7 +7,6 @@ const nextConfig: NextConfig = {
   reactStrictMode: false, // Disable React Strict Mode to prevent double rendering
 
   experimental: {
-    optimizeCss: true,
     optimizeServerReact: true,
   },
 
