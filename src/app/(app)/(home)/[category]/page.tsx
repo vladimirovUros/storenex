@@ -18,7 +18,8 @@ interface Props {
   searchParams: Promise<SearchParams>;
 }
 
-export const dynamic = "force-dynamic";
+export const dynamic = "auto";
+export const revalidate = 300; // Cache for 5 minutes
 
 const Page = async ({ params, searchParams }: Props) => {
   const { category } = await params;
@@ -47,20 +48,24 @@ const Page = async ({ params, searchParams }: Props) => {
     redirect("/?category_not_found=true");
   }
 
-  // console.log(JSON.stringify(filters), "THIS IS FROM RSC");
-
   const queryClient = getQueryClient();
 
-  // Prefetch categories for search filters
-  void queryClient.prefetchQuery(trpc.categories.getMany.queryOptions());
-
-  void queryClient.prefetchInfiniteQuery(
-    trpc.products.getMany.infiniteQueryOptions({
-      ...filters,
-      category,
-      limit: DEFAULT_LIMIT,
-    })
-  );
+  // Use Promise.all for parallel prefetching
+  try {
+    await Promise.all([
+      queryClient.prefetchQuery(trpc.categories.getMany.queryOptions()),
+      queryClient.prefetchInfiniteQuery(
+        trpc.products.getMany.infiniteQueryOptions({
+          ...filters,
+          category,
+          limit: DEFAULT_LIMIT,
+        })
+      ),
+    ]);
+  } catch (error) {
+    // Log but don't block rendering
+    console.warn("Prefetch failed:", error);
+  }
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       {/* Add SearchFilters for category navigation */}

@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { ProductFilters } from "../components/product-filters";
 import { ProductSort } from "../components/product-sort";
 import { ProductList, ProductListSkeleton } from "../components/product-list";
+import { ProductErrorBoundary } from "@/components/product-error-boundary";
 
 interface Props {
   category?: string;
@@ -25,13 +26,17 @@ export const ProductListView = ({
           <ProductFilters />
         </div>
         <div className="lg:col-span-4 xl:col-span-6">
-          <Suspense fallback={<ProductListSkeleton narrowView={narrowView} />}>
-            <ProductList
-              category={category}
-              tenantSlug={tenantSlug}
-              narrowView={narrowView}
-            />
-          </Suspense>
+          <ProductErrorBoundary>
+            <Suspense
+              fallback={<ProductListSkeleton narrowView={narrowView} />}
+            >
+              <ProductList
+                category={category}
+                tenantSlug={tenantSlug}
+                narrowView={narrowView}
+              />
+            </Suspense>
+          </ProductErrorBoundary>
         </div>
       </div>
     </div>

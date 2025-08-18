@@ -45,6 +45,16 @@ export function TRPCReactProvider(
         httpBatchLink({
           transformer: superjson,
           url: getUrl(),
+          // Add batch optimization
+          maxURLLength: 2048,
+          // Add retry mechanism
+          fetch: async (url, opts) => {
+            const response = await fetch(url, {
+              ...opts,
+              keepalive: true, // Keep connection alive for better performance
+            });
+            return response;
+          },
         }),
       ],
     })

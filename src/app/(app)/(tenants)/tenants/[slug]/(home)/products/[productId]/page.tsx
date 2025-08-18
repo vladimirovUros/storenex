@@ -10,18 +10,27 @@ interface Props {
   params: Promise<{ productId: string; slug: string }>;
 }
 
-export const dynamic = "force-dynamic";
+// Optimized: static where possible, dynamic only when needed
+export const dynamic = "auto";
+export const revalidate = 60; // Cache for 60 seconds
 
 const Page = async ({ params }: Props) => {
   const { productId, slug } = await params;
 
   const queryClient = getQueryClient();
 
-  // Prefetch oba poziva na server side-u
-  void queryClient.prefetchQuery(trpc.tenants.getOne.queryOptions({ slug }));
-  void queryClient.prefetchQuery(
-    trpc.products.getOne.queryOptions({ id: productId })
-  );
+  try {
+    // Use Promise.all for parallel fetching
+    await Promise.all([
+      queryClient.prefetchQuery(trpc.tenants.getOne.queryOptions({ slug })),
+      queryClient.prefetchQuery(
+        trpc.products.getOne.queryOptions({ id: productId })
+      ),
+    ]);
+  } catch (error) {
+    // Log error but don't block rendering
+    console.warn("Prefetch failed:", error);
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

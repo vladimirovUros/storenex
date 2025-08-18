@@ -22,9 +22,19 @@ export default async function middleware(req: NextRequest) {
 
   if (hostName.endsWith(`.${rootDomain}`)) {
     const tenantSlug = hostName.replace(`.${rootDomain}`, "");
-    return NextResponse.rewrite(
+    const response = NextResponse.rewrite(
       new URL(`/tenants/${tenantSlug}${url.pathname}`, req.url)
     );
+
+    // Add caching headers for better performance
+    if (url.pathname.includes("/products/")) {
+      response.headers.set(
+        "Cache-Control",
+        "public, s-maxage=300, stale-while-revalidate=600"
+      );
+    }
+
+    return response;
   }
 
   return NextResponse.next();

@@ -18,28 +18,37 @@ export const productsRouter = createTRPCRouter({
       const headers = await getHeaders();
       const session = await ctx.dataBase.auth({ headers });
 
-      const product = await ctx.dataBase.findByID({
-        collection: "products",
-        id: input.id,
-        depth: 2, // Load the "product.image", "product.tenant", and "product.tenant.image"
-        select: {
-          content: false,
-        },
-      });
+      // Use parallel queries for better performance
+      const [product, reviews] = await Promise.all([
+        ctx.dataBase.findByID({
+          collection: "products",
+          id: input.id,
+          depth: 2, // Load the "product.image", "product.tenant", and "product.tenant.image"
+          select: {
+            content: false,
+          },
+        }),
+        ctx.dataBase.find({
+          collection: "reviews",
+          pagination: false,
+          where: {
+            product: {
+              equals: input.id,
+            },
+          },
+        }),
+      ]);
 
-      if (product.isArchived) {
+      if (!product || product.isArchived) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Product not found",
         });
       }
 
-      if (!product) {
-        throw new Error("Product not found");
-      }
-
       let isPurchased = false;
 
+      // Only check purchase status if user is logged in
       if (session.user) {
         const ordersData = await ctx.dataBase.find({
           collection: "orders",
@@ -62,18 +71,7 @@ export const productsRouter = createTRPCRouter({
         });
 
         isPurchased = ordersData.totalDocs > 0;
-        // isPurchased = !!ordersData.docs[0];
       }
-
-      const reviews = await ctx.dataBase.find({
-        collection: "reviews",
-        pagination: false,
-        where: {
-          product: {
-            equals: input.id,
-          },
-        },
-      });
 
       const reviewRating =
         reviews.docs.length > 0
@@ -178,39 +176,44 @@ export const productsRouter = createTRPCRouter({
       }
 
       if (input.category) {
-        const categoriesData = await ctx.dataBase.find({
-          collection: "categories",
-          limit: 1,
-          depth: 1, //Populate subcategories, subcategories.[0] will be a type of "Category"
-          pagination: false,
-          where: {
-            slug: {
-              equals: input.category,
+        try {
+          const categoriesData = await ctx.dataBase.find({
+            collection: "categories",
+            limit: 1,
+            depth: 1, //Populate subcategories, subcategories.[0] will be a type of "Category"
+            pagination: false,
+            where: {
+              slug: {
+                equals: input.category,
+              },
             },
-          },
-        });
+          });
 
-        const formattedData = categoriesData.docs.map((doc) => ({
-          ...doc,
-          subcategories: (doc.subcategories?.docs ?? []).map((doc) => ({
-            //Because of 'depth: 1' i know "doc" will be a type of "Category"
-            ...(doc as Category),
-            subcategories: undefined,
-          })),
-        }));
+          const formattedData = categoriesData.docs.map((doc) => ({
+            ...doc,
+            subcategories: (doc.subcategories?.docs ?? []).map((doc) => ({
+              //Because of 'depth: 1' i know "doc" will be a type of "Category"
+              ...(doc as Category),
+              subcategories: undefined,
+            })),
+          }));
 
-        const subcategoriesSlugs = [];
-        const parentCategory = formattedData[0];
+          const subcategoriesSlugs = [];
+          const parentCategory = formattedData[0];
 
-        if (parentCategory) {
-          subcategoriesSlugs.push(
-            ...parentCategory.subcategories.map(
-              (subcategories) => subcategories.slug
-            )
-          );
-          where["category.slug"] = {
-            in: [parentCategory.slug, ...subcategoriesSlugs],
-          };
+          if (parentCategory) {
+            subcategoriesSlugs.push(
+              ...parentCategory.subcategories.map(
+                (subcategories) => subcategories.slug
+              )
+            );
+            where["category.slug"] = {
+              in: [parentCategory.slug, ...subcategoriesSlugs],
+            };
+          }
+        } catch (error) {
+          console.warn("Category lookup failed:", error);
+          // Continue without category filter if lookup fails
         }
       }
 
@@ -227,69 +230,91 @@ export const productsRouter = createTRPCRouter({
       }
 
       const payload = ctx.dataBase;
-      const data = await payload.find({
-        collection: "products",
-        depth: 2, //Populate "category", & "image", "tenant" & "tenant.image"
-        where,
-        sort,
-        page: input.cursor,
-        limit: input.limit,
-        select: {
-          content: false,
-        },
-        // pagination: true,
-      });
 
-      const productIds = data.docs.map((doc) => doc.id);
-
-      const allReviewsData = await ctx.dataBase.find({
-        collection: "reviews",
-        pagination: false,
-        where: {
-          product: {
-            in: productIds,
+      try {
+        const data = await payload.find({
+          collection: "products",
+          depth: 2, //Populate "category", & "image", "tenant" & "tenant.image"
+          where,
+          sort,
+          page: input.cursor,
+          limit: input.limit,
+          select: {
+            content: false,
           },
-        },
-      });
+          // pagination: true,
+        });
 
-      const reviewsByProductId = allReviewsData.docs.reduce(
-        (acc, review) => {
-          const productId =
-            typeof review.product === "string"
-              ? review.product
-              : review.product.id;
-          if (!acc[productId]) {
-            acc[productId] = [];
-          }
-          acc[productId].push(review);
-          return acc;
-        },
-        {} as Record<string, typeof allReviewsData.docs>
-      );
+        const productIds = data.docs.map((doc) => doc.id);
 
-      const dataWithSummarizeReviews = data.docs.map((doc) => {
-        const productReviews = reviewsByProductId[doc.id] || [];
-        const reviewCount = productReviews.length;
-        const reviewRating =
-          reviewCount === 0
-            ? 0
-            : productReviews.reduce((acc, review) => acc + review.rating, 0) /
-              reviewCount;
+        // Only fetch reviews if we have products
+        let reviewsByProductId: Record<string, any[]> = {};
+
+        if (productIds.length > 0) {
+          const allReviewsData = await payload.find({
+            collection: "reviews",
+            pagination: false,
+            where: {
+              product: {
+                in: productIds,
+              },
+            },
+          });
+
+          reviewsByProductId = allReviewsData.docs.reduce(
+            (acc, review) => {
+              const productId =
+                typeof review.product === "string"
+                  ? review.product
+                  : review.product.id;
+              if (!acc[productId]) {
+                acc[productId] = [];
+              }
+              acc[productId].push(review);
+              return acc;
+            },
+            {} as Record<string, typeof allReviewsData.docs>
+          );
+        }
+
+        const dataWithSummarizeReviews = data.docs.map((doc) => {
+          const productReviews = reviewsByProductId[doc.id] || [];
+          const reviewCount = productReviews.length;
+          const reviewRating =
+            reviewCount === 0
+              ? 0
+              : productReviews.reduce((acc, review) => acc + review.rating, 0) /
+                reviewCount;
+
+          return {
+            ...doc,
+            reviewCount,
+            reviewRating,
+          };
+        });
 
         return {
-          ...doc,
-          reviewCount,
-          reviewRating,
+          ...data,
+          docs: dataWithSummarizeReviews.map((doc) => ({
+            ...doc,
+            image: doc.image as Media | null,
+            tenant: doc.tenant as Tenant & { image: Media | null },
+          })),
         };
-      });
-
-      return {
-        ...data,
-        docs: dataWithSummarizeReviews.map((doc) => ({
-          ...doc,
-          image: doc.image as Media | null,
-          tenant: doc.tenant as Tenant & { image: Media | null },
-        })),
-      };
+      } catch (error) {
+        console.error("Products query failed:", error);
+        // Return empty result on error to prevent crash
+        return {
+          docs: [],
+          totalDocs: 0,
+          limit: input.limit,
+          page: input.cursor,
+          totalPages: 0,
+          hasPrevPage: false,
+          hasNextPage: false,
+          prevPage: null,
+          nextPage: null,
+        };
+      }
     }),
 });

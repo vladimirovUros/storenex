@@ -35,7 +35,9 @@ interface ProductViewProps {
 export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(
-    trpc.products.getOne.queryOptions({ id: productId })
+    trpc.products.getOne.queryOptions({ 
+      id: productId,
+    })
   );
 
   const [isCopied, setIsCopied] = useState(false);
@@ -49,8 +51,9 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
             alt={data.name}
             fill
             sizes="100vw"
-            quality={80}
+            quality={90}
             className="object-cover"
+            priority={true} // Load product image with priority
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-6">

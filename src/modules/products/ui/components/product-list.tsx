@@ -18,7 +18,7 @@ interface Props {
 export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
   const [filters] = useProductFilters();
   const trpc = useTRPC();
-  // const { sort: filterSort, ...otherFilters } = filters;
+
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useSuspenseInfiniteQuery(
       trpc.products.getMany.infiniteQueryOptions(
