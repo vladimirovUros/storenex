@@ -57,11 +57,14 @@ export const SignInView = () => {
         toast.success(
           `Logged in successfully! Welcome back${username ? `, ${username}` : ""}!`
         );
-        await queryClient.invalidateQueries({
-          // queryClient.invalidateQueries(trpc.auth.session.queryFilter());!!!!!!!!!!!!!!!!!!
+
+        // Force refetch umesto samo invalidate
+        await queryClient.refetchQueries({
           queryKey: trpc.auth.session.queryKey(),
         });
+
         router.push("/");
+        router.refresh(); // Refresh server components
         form.reset();
       },
       onError: (error) => {

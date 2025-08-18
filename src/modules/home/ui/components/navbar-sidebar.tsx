@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { UseQueryResult } from "@tanstack/react-query";
 import {
   Sheet,
   SheetContent,
@@ -16,8 +17,14 @@ interface Props {
   items: NavbarItem[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  session: UseQueryResult<any, any>;
 }
-export const NavbarSidebar = ({ items, open, onOpenChange }: Props) => {
+export const NavbarSidebar = ({
+  items,
+  open,
+  onOpenChange,
+  session,
+}: Props) => {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="p-0 transition-none">
@@ -39,18 +46,32 @@ export const NavbarSidebar = ({ items, open, onOpenChange }: Props) => {
             </Link>
           ))}
           <div className="border-t">
-            <Link
-              href="/sign-in"
-              className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium transition-colors"
-            >
-              Log In
-            </Link>
-            <Link
-              href="/sign-up"
-              className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium transition-colors"
-            >
-              Start selling
-            </Link>
+            {session.data?.user ? (
+              <Link
+                href="/admin"
+                className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium transition-colors"
+                onClick={() => onOpenChange(false)}
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/sign-in"
+                  className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium transition-colors"
+                  onClick={() => onOpenChange(false)}
+                >
+                  Log In
+                </Link>
+                <Link
+                  href="/sign-up"
+                  className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium transition-colors"
+                  onClick={() => onOpenChange(false)}
+                >
+                  Start selling
+                </Link>
+              </>
+            )}
           </div>
         </ScrollArea>
       </SheetContent>

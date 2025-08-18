@@ -55,11 +55,13 @@ export const SignUpView = () => {
   const onSubmit = (data: z.infer<typeof registerSchema>) => {
     register.mutate(data, {
       onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          // queryClient.invalidateQueries(trpc.auth.session.queryFilter());!!!!!!!!!!!!!!!!!!
+        // Force refetch umesto samo invalidate
+        await queryClient.refetchQueries({
           queryKey: trpc.auth.session.queryKey(),
         });
+
         router.push("/");
+        router.refresh(); // Refresh server components
         form.reset();
         toast.success(
           `Account created successfully! Welcome ${data.username} Please check your email to verify your account.`

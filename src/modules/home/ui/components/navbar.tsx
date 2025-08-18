@@ -52,7 +52,12 @@ export const Navbar = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const trpc = useTRPC();
-  const session = useQuery(trpc.auth.session.queryOptions());
+  const session = useQuery({
+    ...trpc.auth.session.queryOptions(),
+    staleTime: 0, // Always consider data stale
+    refetchOnMount: true, // Always refetch when component mounts
+    refetchOnWindowFocus: true, // Refetch when user focuses window
+  });
   return (
     <nav className="h-20 flex border-b justify-between font-medium bg-white">
       <Link href="/" className="pl-6 flex items-center">
@@ -64,6 +69,7 @@ export const Navbar = () => {
         items={navbarItems}
         open={isSidebarOpen}
         onOpenChange={setSidebarOpen}
+        session={session}
       />
       <div className="items-center gap-3 hidden lg:flex">
         {navbarItems.map((item) => (
