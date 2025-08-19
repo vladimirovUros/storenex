@@ -198,7 +198,7 @@ export const productsRouter = createTRPCRouter({
             })),
           }));
 
-          const subcategoriesSlugs = [];
+          const subcategoriesSlugs: string[] = [];
           const parentCategory = formattedData[0];
 
           if (parentCategory) {

@@ -3,6 +3,7 @@ import { DM_Sans } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { TRPCReactProvider } from "@/trpc/client";
 import { Toaster } from "sonner";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 // import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
@@ -31,6 +32,7 @@ export default function RootLayout({
           <TRPCReactProvider>{children}</TRPCReactProvider>
           <Toaster position="bottom-right" expand={true} richColors={true} />
         </NuqsAdapter>
+        <SpeedInsights />
       </body>
     </html>
   );
