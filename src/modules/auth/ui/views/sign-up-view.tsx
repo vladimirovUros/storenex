@@ -10,7 +10,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import {
   Form,
   FormControl,
@@ -50,22 +50,33 @@ export const SignUpView = () => {
     },
   });
 
-  const queryClient = useQueryClient();
-
   const onSubmit = (data: z.infer<typeof registerSchema>) => {
     register.mutate(data, {
       onSuccess: async () => {
-        // Force refetch umesto samo invalidate
-        await queryClient.refetchQueries({
-          queryKey: trpc.auth.session.queryKey(),
-        });
+        // Pošalji verifikacioni email
+        try {
+          const response = await fetch("/api/auth/send-verification", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: data.email }),
+          });
 
-        router.push("/");
-        router.refresh(); // Refresh server components
-        form.reset();
-        toast.success(
-          `Account created successfully! Welcome ${data.username} Please check your email to verify your account.`
-        );
+          if (response.ok) {
+            form.reset();
+            toast.success(
+              `Account created successfully! Please check your email (${data.email}) to verify your account before signing in.`
+            );
+            router.push("/sign-in?message=verify-email");
+          } else {
+            const errorData = await response.json();
+            toast.error(errorData.error || "Failed to send verification email");
+          }
+        } catch (error) {
+          console.error("Error sending verification email:", error);
+          toast.error("Account created but failed to send verification email");
+        }
       },
       onError: (error) => {
         // console.log("Registration failed:", error);!!!!!!!!!!!!!!!!!!!!!

@@ -6,6 +6,8 @@ export const Orders: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "user", "product", "createdAt"],
+    description:
+      "Here you can view orders for your products. Only orders that customers have placed for your products are displayed.",
   },
   access: {
     read: ({ req }) => {

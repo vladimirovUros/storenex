@@ -136,6 +136,18 @@ export interface UserAuthOperations {
 export interface User {
   id: string;
   username: string;
+  /**
+   * User email verification status
+   */
+  isVerified?: boolean | null;
+  /**
+   * Token for email verification
+   */
+  verificationToken?: string | null;
+  /**
+   * Expiry time for verification token
+   */
+  verificationTokenExpiry?: string | null;
   roles?: ('super-admin' | 'user')[] | null;
   tenants?:
     | {
@@ -305,6 +317,8 @@ export interface Tag {
   createdAt: string;
 }
 /**
+ * Here you can view orders for your products. Only orders that customers have placed for your products are displayed.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "orders".
  */
@@ -427,6 +441,9 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   username?: T;
+  isVerified?: T;
+  verificationToken?: T;
+  verificationTokenExpiry?: T;
   roles?: T;
   tenants?:
     | T

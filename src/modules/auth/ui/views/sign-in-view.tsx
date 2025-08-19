@@ -19,7 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, Mail } from "lucide-react";
 
 import { loginSchema } from "../../schemas";
 import { cn } from "@/lib/utils";
@@ -35,6 +35,9 @@ const poppins = Poppins({
 export const SignInView = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [showResendVerification, setShowResendVerification] = useState(false);
+  const [resendingVerification, setResendingVerification] = useState(false);
+  const [lastEmailSent, setLastEmailSent] = useState<string>("");
 
   const trpc = useTRPC();
   const queryClient = useQueryClient();
@@ -68,7 +71,6 @@ export const SignInView = () => {
         form.reset();
       },
       onError: (error) => {
-        // console.log("Registration failed:", error);
         const errorMessage =
           (error as { shape?: { message?: string }; message?: string })?.shape
             ?.message ??
@@ -77,6 +79,12 @@ export const SignInView = () => {
           "Failed to log in. Please try again later.";
 
         console.log("Login error:", error);
+
+        // Proveri da li je greška zbog neverifikovanog emaila
+        if (errorMessage.includes("verify your email")) {
+          setShowResendVerification(true);
+          setLastEmailSent(data.email);
+        }
 
         form.setError("email", { message: " " });
         form.setError("password", { message: errorMessage });
@@ -88,6 +96,34 @@ export const SignInView = () => {
         }, 3000);
       },
     });
+  };
+
+  const handleResendVerification = async () => {
+    if (!lastEmailSent) return;
+
+    setResendingVerification(true);
+    try {
+      const response = await fetch("/api/auth/send-verification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: lastEmailSent }),
+      });
+
+      if (response.ok) {
+        toast.success("Verification email sent! Please check your inbox.");
+        setShowResendVerification(false);
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.error || "Failed to send verification email");
+      }
+    } catch (error) {
+      console.error("Error resending verification:", error);
+      toast.error("Failed to send verification email");
+    } finally {
+      setResendingVerification(false);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -183,6 +219,73 @@ export const SignInView = () => {
                 "Log in"
               )}
             </Button>
+            {showResendVerification && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <Mail className="w-5 h-5 text-yellow-600" />
+                  <h3 className="font-bold text-yellow-800">
+                    Email not verified!
+                  </h3>
+                </div>
+                <p className="text-sm text-yellow-700 mb-4">
+                  Your account needs to be verified before you can sign in.
+                  Didn&apos;t receive the verification email?
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleResendVerification}
+                  disabled={resendingVerification}
+                  className="w-full text-yellow-700 border-yellow-300 hover:bg-yellow-100"
+                >
+                  {resendingVerification ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="mr-2 h-4 w-4" />
+                      Resend Verification Email
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+
+            {/* {showResendVerification && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="flex items-center mb-2">
+                  <Mail className="w-5 h-5 text-yellow-600 mr-2" />
+                  <span className="text-sm font-medium text-yellow-800">
+                    Email not verified
+                  </span>
+                </div>
+                <p className="text-sm text-yellow-700 mb-3">
+                  Please check your email and click the verification link.
+                  Didn't receive it?
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleResendVerification}
+                  disabled={resendingVerification}
+                  className="text-yellow-700 border-yellow-300 hover:bg-yellow-100"
+                >
+                  {resendingVerification ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    "Resend verification email"
+                  )}
+                </Button>
+              </div>
+            )} */}
+
             <p className="text-sm text-gray-500">
               By logging in, you agree to our{" "}
               <Link href="/terms" className="text-orange-500 hover:underline">

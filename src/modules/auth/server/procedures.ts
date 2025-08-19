@@ -57,7 +57,7 @@ export const authRouter = createTRPCRouter({
         if (existingEmailUser) {
           throw new TRPCError({
             code: "CONFLICT",
-            message: "An account with this email already exists",
+            message: "An account with this email is already registered",
           });
         }
 
@@ -85,6 +85,7 @@ export const authRouter = createTRPCRouter({
             email: input.email,
             username: input.username,
             password: input.password,
+            isVerified: false, // Eksplicitno postaviti na false
             tenants: [
               {
                 tenant: tenant.id,
@@ -93,24 +94,12 @@ export const authRouter = createTRPCRouter({
           },
         });
 
-        const data = await ctx.dataBase.login({
-          collection: "users",
-          data: {
-            email: input.email,
-            password: input.password,
-          },
-        });
-        if (!data.token) {
-          throw new TRPCError({
-            code: "UNAUTHORIZED",
-            message: "Failed to log in, Invalid email or password",
-          });
-        }
-
-        await generateAuthCookie({
-          prefix: ctx.dataBase.config.cookiePrefix,
-          value: data.token,
-        });
+        // NE prijavljuj korisnika automatski - mora prvo da verifikuje email
+        return {
+          success: true,
+          message:
+            "Account created successfully! Please check your email to verify your account.",
+        };
       } catch (error: unknown) {
         // console.log("Registration error:", error);!!!!!!!!!!!!!!!
 
@@ -133,6 +122,40 @@ export const authRouter = createTRPCRouter({
     }),
   login: baseProcedure.input(loginSchema).mutation(async ({ input, ctx }) => {
     try {
+      // Prvo pronađi korisnika da proveriš da li je verifikovan
+      const users = await ctx.dataBase.find({
+        collection: "users",
+        where: {
+          email: { equals: input.email },
+        },
+        limit: 1,
+      });
+
+      if (users.docs.length === 0) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Invalid email or password.",
+        });
+      }
+
+      const user = users.docs[0];
+
+      if (!user) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Invalid email or password.",
+        });
+      }
+
+      // Proveri da li je korisnik verifikovan
+      if (!user.isVerified) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message:
+            "Please verify your email address before signing in. Check your inbox for verification link.",
+        });
+      }
+
       const data = await ctx.dataBase.login({
         collection: "users",
         data: {
@@ -140,6 +163,7 @@ export const authRouter = createTRPCRouter({
           password: input.password,
         },
       });
+
       if (!data || !data.token) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
@@ -154,6 +178,11 @@ export const authRouter = createTRPCRouter({
       return data;
     } catch (error: unknown) {
       console.error(`Login failed for ${input.email}:`, error);
+
+      if (error instanceof TRPCError) {
+        throw error;
+      }
+
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "Invalid email or password.",

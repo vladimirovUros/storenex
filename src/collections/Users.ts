@@ -52,6 +52,40 @@ export const Users: CollectionConfig = {
       type: "text",
     },
     {
+      name: "isVerified",
+      type: "checkbox",
+      defaultValue: false,
+      admin: {
+        position: "sidebar",
+        description: "User email verification status",
+      },
+      access: {
+        update: ({ req }) => isSuperAdmin(req.user),
+      },
+    },
+    {
+      name: "verificationToken",
+      type: "text",
+      admin: {
+        position: "sidebar",
+        description: "Token for email verification",
+      },
+      access: {
+        update: ({ req }) => isSuperAdmin(req.user),
+      },
+    },
+    {
+      name: "verificationTokenExpiry",
+      type: "date",
+      admin: {
+        position: "sidebar",
+        description: "Expiry time for verification token",
+      },
+      access: {
+        update: ({ req }) => isSuperAdmin(req.user),
+      },
+    },
+    {
       admin: {
         position: "sidebar",
       },

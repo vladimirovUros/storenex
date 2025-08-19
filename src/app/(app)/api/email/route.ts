@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
           </div>
           
           <div style="text-align: center; margin-top: 20px; color: #666; font-size: 14px;">
-            Sent from StoreNex contact form
+            Sent from storenex contact form
           </div>
         </div>
       </div>
