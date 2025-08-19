@@ -2,6 +2,7 @@
 
 import { TRPCClientError } from "@trpc/client";
 import Link from "next/link";
+import { getSignInURL } from "@/lib/utils";
 
 interface Props {
   error: Error & { digest?: string };
@@ -110,7 +111,7 @@ export default function LibraryProductError({ error, reset }: Props) {
             }}
           >
             <Link
-              href="/sign-in"
+              href={getSignInURL()}
               style={buttonStyle}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}

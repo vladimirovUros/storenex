@@ -213,14 +213,14 @@ const Page = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black text-white">
+      <div className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-x-hidden">
         {/* Decorative elements */}
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-6xl md:text-8xl font-black leading-tight mb-8">
+            <h1 className="text-5xl md:text-8xl font-black leading-tight mb-8 break-words">
               POWERFUL
               <br />
               <span className="text-transparent bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text">
@@ -244,7 +244,7 @@ const Page = () => {
       </div>
 
       {/* Category Navigation */}
-      <div className="py-12 bg-white border-b-4 border-black">
+      <div className="py-12 bg-white border-b-4 border-black overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center gap-4">
             {categories.map((category) => (
@@ -280,7 +280,7 @@ const Page = () => {
                   >
                     <feature.icon className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-black mb-4 text-gray-900">
+                  <h3 className="text-xl font-black mb-4 text-gray-900 break-words">
                     {feature.title}
                   </h3>
                   <p className="text-gray-600 font-semibold leading-relaxed">
@@ -297,7 +297,7 @@ const Page = () => {
       <div className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-black mb-6">
+            <h2 className="text-4xl font-black mb-6">
               SEAMLESS <span className="text-blue-500">INTEGRATIONS</span>
             </h2>
             <p className="text-xl font-semibold text-gray-600">
@@ -368,7 +368,7 @@ const Page = () => {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12">
+          <div className="grid md:grid-cols-2 gap-12 sm:ml-36 md:ml-20 lg:ml-48">
             <div>
               <h3 className="text-3xl font-black mb-8 text-red-400">
                 OTHER PLATFORMS
@@ -421,27 +421,27 @@ const Page = () => {
       {/* CTA Section */}
       <div className="py-20 bg-gradient-to-r from-orange-500 via-yellow-500 to-green-500">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-5xl font-black text-black mb-8">
+          <h2 className="text-4xl sm:text-5xl font-black text-black mb-8">
             READY TO BUILD YOUR
             <br />
             DIGITAL EMPIRE?
           </h2>
 
-          <p className="text-xl font-bold text-black mb-12 opacity-80">
+          <p className="text-lg sm:text-xl font-bold text-black mb-12 opacity-80">
             Join thousands of creators who are already winning with Storenex
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link
               href="/sign-up"
-              className="bg-black text-white px-10 py-5 text-xl font-black rounded-2xl hover:bg-gray-800 transition-all transform hover:scale-105 inline-flex items-center justify-center"
+              className="w-full sm:w-auto bg-black text-white px-8 sm:px-10 py-4 sm:py-5 text-base sm:text-xl font-black rounded-2xl hover:bg-gray-800 transition-all transform hover:scale-105 inline-flex items-center justify-center"
             >
               START FREE TODAY
-              <ArrowRight className="ml-3 w-6 h-6" />
+              <ArrowRight className="ml-3 w-5 h-5 sm:w-6 sm:h-6" />
             </Link>
             <Link
               href="/pricing"
-              className="border-4 border-black text-black px-10 py-5 text-xl font-black rounded-2xl hover:bg-black hover:text-white transition-all text-center"
+              className="w-full sm:w-auto border-4 border-black text-black px-8 sm:px-10 py-4 sm:py-5 text-base sm:text-xl font-black rounded-2xl hover:bg-black hover:text-white transition-all text-center"
             >
               VIEW PRICING
             </Link>
