@@ -81,7 +81,7 @@ const Page = () => {
                     <span className="bg-orange-500 text-white px-3 py-1 sm:px-4 sm:py-2 rotate-1 inline-block border-2 sm:border-3 border-black rounded-lg mx-2 text-base sm:text-xl md:text-2xl">
                       STUPIDLY EASY
                     </span>{" "}
-                    for creators worldwide!
+                    for creators worldwide
                   </p>
                 </div>
               </div>
@@ -276,7 +276,7 @@ const Page = () => {
                             WAY TOO HARD
                           </span>
                           Creators were spending more time on boring stuff than
-                          creating!
+                          creating
                         </p>
                       </div>
                     </div>
@@ -349,7 +349,7 @@ const Page = () => {
                             WAY TOO HARD
                           </span>
                           Creators were spending more time on boring stuff than
-                          creating!
+                          creating``
                         </p>
                       </div>
                     </div>
@@ -373,7 +373,7 @@ const Page = () => {
                           </span>
                           No boring stuff, just pure
                           <span className="bg-white text-black px-3 py-1 border-2 border-black rotate-2 inline-block mx-2 rounded-lg font-black">
-                            BRUTAL SIMPLICITY!
+                            BRUTAL SIMPLICITY
                           </span>
                         </p>
                       </div>
@@ -396,7 +396,7 @@ const Page = () => {
                           <span className="bg-black text-white px-3 py-1 border-2 border-white rotate-2 inline-block mx-2 rounded-lg">
                             THE PLATFORM
                           </span>
-                          for digital creators worldwide!
+                          for digital creators worldwide
                         </p>
                       </div>
                     </div>
@@ -435,7 +435,7 @@ const Page = () => {
                       </h3>
                       <p className="font-bold leading-relaxed text-center">
                         No hidden fees, no surprise charges. What you see is
-                        what you get!
+                        what you get
                       </p>
                     </div>
                   </div>
@@ -452,7 +452,7 @@ const Page = () => {
                       </h3>
                       <p className="font-bold leading-relaxed text-center">
                         Complex problems deserve simple solutions. We keep it
-                        brutally simple!
+                        brutally simple
                       </p>
                     </div>
                   </div>
@@ -469,7 +469,7 @@ const Page = () => {
                       </h3>
                       <p className="font-bold leading-relaxed text-center">
                         Creators supporting creators. We&apos;re all in this
-                        wild journey together!
+                        wild journey together
                       </p>
                     </div>
                   </div>
@@ -489,7 +489,7 @@ const Page = () => {
                       </h3>
                       <p className="font-bold leading-relaxed text-center">
                         No hidden fees, no surprise charges. What you see is
-                        what you get!
+                        what you get
                       </p>
                     </div>
                   </div>
@@ -506,7 +506,7 @@ const Page = () => {
                       </h3>
                       <p className="font-bold leading-relaxed text-center">
                         Complex problems deserve simple solutions. We keep it
-                        brutally simple!
+                        brutally simple
                       </p>
                     </div>
                   </div>
@@ -523,7 +523,7 @@ const Page = () => {
                       </h3>
                       <p className="font-bold leading-relaxed text-center">
                         Creators supporting creators. We&apos;re all in this
-                        wild journey together!
+                        wild journey together
                       </p>
                     </div>
                   </div>

@@ -114,7 +114,7 @@ export const Footer = () => {
                   { href: "/help", label: "HELP" },
                   { href: "/terms", label: "TERMS" },
                   { href: "/faq", label: "FAQ" },
-                  { href: "/cookies", label: "COOKIES" },
+                  { href: "/careers", label: "CAREERS" },
                 ].map((link, index) => (
                   <Link
                     key={link.href}
@@ -184,9 +184,9 @@ export const Footer = () => {
                 <div className="absolute top-2 left-2 w-full h-full bg-black rounded-[20px]"></div>
                 <div className="relative bg-orange-500 border-4 border-black px-6 py-3 rounded-[20px] -rotate-1 group-hover:-translate-x-1 group-hover:-translate-y-1 transition-all">
                   <p className="text-lg font-black text-white flex items-center gap-2">
-                    Made with{" "}
-                    <Heart className="h-5 w-5 fill-white stroke-white animate-pulse" />{" "}
-                    by{" "}
+                    Made by{" "}
+                    {/* with{" "}
+                    <Heart className="h-5 w-5 fill-white stroke-white animate-pulse" />{" "} */}
                     <span className="bg-white text-black px-2 py-1 border-2 border-black rotate-1 rounded-lg text-sm group-hover:bg-yellow-300 transition-colors">
                       vladimirovUros
                     </span>

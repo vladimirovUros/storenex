@@ -12,6 +12,7 @@ import {
   Users,
   Shield,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const Page = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +23,8 @@ const Page = () => {
     category: "general",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -34,9 +37,76 @@ const Page = () => {
     });
   };
 
-  const handleSubmit = () => {
-    // Here you would typically send the form data to your backend
-    setIsSubmitted(true);
+  const validateForm = () => {
+    const errors: string[] = [];
+
+    if (!formData.name.trim()) {
+      errors.push("Full name is required");
+    }
+
+    if (!formData.email.trim()) {
+      errors.push("Email is required");
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        errors.push("Please enter a valid email address");
+      }
+    }
+
+    if (!formData.subject.trim()) {
+      errors.push("Subject is required");
+    }
+
+    if (!formData.message.trim()) {
+      errors.push("Message is required");
+    } else if (formData.message.trim().length < 10) {
+      errors.push("Message must be at least 10 characters long");
+    }
+
+    return errors;
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const validationErrors = validateForm();
+      if (validationErrors.length > 0) {
+        const firstError = validationErrors[0] || "Validation error";
+        setError(firstError);
+        toast.error(firstError);
+        return;
+      }
+      const response = await fetch("/api/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setIsSubmitted(true);
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+          category: "general",
+        });
+      } else {
+        setError(result.error || "Failed to send message");
+        toast.error(result.error || "Failed to send message");
+      }
+    } catch (error) {
+      console.error("Greska", error);
+      setError("Failed to send message. Please try again later.");
+      toast.error("Failed to send message. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const contactMethods = [
@@ -107,7 +177,7 @@ const Page = () => {
               MESSAGE SENT!
             </h1>
             <p className="text-xl font-semibold text-gray-600 mb-8">
-              Thanks for reaching out! We&apos;ll get back to you within 2-4
+              Thanks for reaching out! We&apos;ll get back to you within 1-3
               hours.
             </p>
             <button
@@ -202,95 +272,108 @@ const Page = () => {
           </div>
 
           <div className="bg-white rounded-3xl border-4 border-black p-8 shadow-2xl">
-            <div className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+            {error && (
+              <div className="bg-red-100 border-4 border-red-500 text-red-700 px-6 py-4 rounded-2xl mb-6">
+                <p className="font-bold">{error}</p>
+              </div>
+            )}
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-lg font-black text-gray-900 mb-3">
+                      YOUR FULL NAME *
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-4 border-4 border-gray-300 rounded-2xl font-semibold text-gray-900 focus:border-orange-500 focus:outline-none transition-all"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-lg font-black text-gray-900 mb-3">
+                      EMAIL ADDRESS *
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-4 border-4 border-gray-300 rounded-2xl font-semibold text-gray-900 focus:border-orange-500 focus:outline-none transition-all"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-lg font-black text-gray-900 mb-3">
-                    YOUR NAME *
+                    CATEGORY
+                  </label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-4 border-4 border-gray-300 rounded-2xl font-semibold text-gray-900 focus:border-orange-500 focus:outline-none transition-all"
+                  >
+                    {categories.map((cat) => (
+                      <option key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-lg font-black text-gray-900 mb-3">
+                    SUBJECT *
                   </label>
                   <input
                     type="text"
-                    name="name"
-                    required
-                    value={formData.name}
+                    name="subject"
+                    value={formData.subject}
                     onChange={handleInputChange}
                     className="w-full px-4 py-4 border-4 border-gray-300 rounded-2xl font-semibold text-gray-900 focus:border-orange-500 focus:outline-none transition-all"
-                    placeholder="Enter your full name"
+                    placeholder="What's this about?"
                   />
                 </div>
 
                 <div>
                   <label className="block text-lg font-black text-gray-900 mb-3">
-                    EMAIL ADDRESS *
+                    MESSAGE *
                   </label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    value={formData.email}
+                  <textarea
+                    name="message"
+                    rows={6}
+                    value={formData.message}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-4 border-4 border-gray-300 rounded-2xl font-semibold text-gray-900 focus:border-orange-500 focus:outline-none transition-all"
-                    placeholder="your@email.com"
+                    className="w-full px-4 py-4 border-4 border-gray-300 rounded-2xl font-semibold text-gray-900 focus:border-orange-500 focus:outline-none transition-all resize-none"
+                    placeholder="Tell us everything! The more details, the better we can help you."
                   />
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-lg font-black text-gray-900 mb-3">
-                  CATEGORY
-                </label>
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-4 border-4 border-gray-300 rounded-2xl font-semibold text-gray-900 focus:border-orange-500 focus:outline-none transition-all"
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-5 px-8 rounded-2xl font-black text-xl hover:shadow-lg transform hover:scale-105 transition-all inline-flex items-center justify-center"
                 >
-                  {categories.map((cat) => (
-                    <option key={cat.value} value={cat.value}>
-                      {cat.label}
-                    </option>
-                  ))}
-                </select>
+                  {isLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
+                      SENDING...
+                    </>
+                  ) : (
+                    <>
+                      SEND MESSAGE
+                      <Send className="ml-3 w-6 h-6" />
+                    </>
+                  )}
+                </button>
               </div>
-
-              <div>
-                <label className="block text-lg font-black text-gray-900 mb-3">
-                  SUBJECT *
-                </label>
-                <input
-                  type="text"
-                  name="subject"
-                  required
-                  value={formData.subject}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-4 border-4 border-gray-300 rounded-2xl font-semibold text-gray-900 focus:border-orange-500 focus:outline-none transition-all"
-                  placeholder="What's this about?"
-                />
-              </div>
-
-              <div>
-                <label className="block text-lg font-black text-gray-900 mb-3">
-                  MESSAGE *
-                </label>
-                <textarea
-                  name="message"
-                  required
-                  rows={6}
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-4 border-4 border-gray-300 rounded-2xl font-semibold text-gray-900 focus:border-orange-500 focus:outline-none transition-all resize-none"
-                  placeholder="Tell us everything! The more details, the better we can help you."
-                />
-              </div>
-
-              <button
-                onClick={handleSubmit}
-                className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-5 px-8 rounded-2xl font-black text-xl hover:shadow-lg transform hover:scale-105 transition-all inline-flex items-center justify-center"
-              >
-                SEND MESSAGE
-                <Send className="ml-3 w-6 h-6" />
-              </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
