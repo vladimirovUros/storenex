@@ -59,9 +59,9 @@ export async function POST(request: NextRequest) {
     `;
 
     const data = await resend.emails.send({
-      from: "StoreNex <contact@storenex.shop>", // ✅ Kraće i čišće
+      from: "storenex <contact@storenex.shop>", // ✅ Kraće i čišće
       to: ["urosvladimirov@gmail.com"], // PROMENI na email gde želiš da primaš poruke
-      subject: `Nova poruka: ${subject}`,
+      subject: `New message: ${subject}`,
       html: emailHtml,
       replyTo: email, // Omogućava direktan odgovor pošaljaocu
     });
