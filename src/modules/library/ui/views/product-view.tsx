@@ -16,9 +16,9 @@ interface Props {
 // Funkcija za čišćenje RichText podataka
 const cleanRichTextData = (
   data: unknown
-): { cleanedData: unknown; hasErrors: boolean } => {
+): { cleanedData: unknown; hasErrors: boolean; isEmpty: boolean } => {
   if (!data || typeof data !== "object" || data === null) {
-    return { cleanedData: data, hasErrors: false };
+    return { cleanedData: data, hasErrors: false, isEmpty: true };
   }
 
   const dataObj = data as Record<string, unknown>;
@@ -27,12 +27,12 @@ const cleanRichTextData = (
     typeof dataObj.root !== "object" ||
     dataObj.root === null
   ) {
-    return { cleanedData: data, hasErrors: false };
+    return { cleanedData: data, hasErrors: false, isEmpty: true };
   }
 
   const rootObj = dataObj.root as Record<string, unknown>;
   if (!Array.isArray(rootObj.children)) {
-    return { cleanedData: data, hasErrors: false };
+    return { cleanedData: data, hasErrors: false, isEmpty: true };
   }
 
   let hasErrors = false;
@@ -74,7 +74,17 @@ const cleanRichTextData = (
     },
   };
 
-  return { cleanedData, hasErrors };
+  // Proverava da li je sadržaj prazan (samo paragraf sa praznim children)
+  const isEmpty =
+    rootObj.children.length === 1 &&
+    rootObj.children[0] &&
+    typeof rootObj.children[0] === "object" &&
+    (rootObj.children[0] as Record<string, unknown>).type === "paragraph" &&
+    Array.isArray((rootObj.children[0] as Record<string, unknown>).children) &&
+    ((rootObj.children[0] as Record<string, unknown>).children as unknown[])
+      .length === 0;
+
+  return { cleanedData, hasErrors, isEmpty };
 };
 
 export const ProductView = ({ productId }: Props) => {
@@ -107,9 +117,36 @@ export const ProductView = ({ productId }: Props) => {
           <div className="lg:col-span-5">
             {data.content ? (
               (() => {
-                const { cleanedData, hasErrors } = cleanRichTextData(
+                const { cleanedData, hasErrors, isEmpty } = cleanRichTextData(
                   data.content
                 );
+
+                // Ako je sadržaj prazan (samo paragraf bez sadržaja), možda su fajlovi obrisani
+                if (isEmpty) {
+                  return (
+                    <div>
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-4">
+                        <div className="flex items-start gap-3">
+                          <AlertTriangleIcon className="size-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <h3 className="font-semibold text-amber-800 mb-2">
+                              Content Appears Empty
+                            </h3>
+                            <p className="text-amber-700 mb-3">
+                              The content for this product appears to be empty.
+                              This may happen if files were removed from the
+                              system or if the content was cleared.
+                            </p>
+                            <p className="text-sm text-amber-600">
+                              Please contact the seller for assistance or to
+                              clarify the content availability.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
 
                 if (hasErrors) {
                   return (
