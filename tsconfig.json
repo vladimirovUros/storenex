@@ -31,10 +31,14 @@
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     ".next/types/**/*.ts",
     "src/modules/home/ui/components/footer.jsx"
   ],
-  "exclude": ["node_modules/**/*", "**/node_modules/**/*"]
+  "exclude": [
+    "node_modules/**/*",
+    "**/node_modules/**/*",
+    "node_modules/@vercel/analytics/**/*"
+  ]
 }
