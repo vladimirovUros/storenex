@@ -63,7 +63,6 @@ export const Categories = ({ data }: CategoriesProps) => {
   return (
     <div className="relative w-full">
       <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
-      {/* Hidden div to measure all items */}
       <div
         ref={measureRef}
         className="absolute opacity-0 pointer-events-none flex"
@@ -79,8 +78,6 @@ export const Categories = ({ data }: CategoriesProps) => {
           </div>
         ))}
       </div>
-
-      {/* Visible items */}
       <div
         ref={containerRef}
         onMouseEnter={() => setIsAnyHovered(true)}
@@ -96,7 +93,6 @@ export const Categories = ({ data }: CategoriesProps) => {
             />
           </div>
         ))}
-        {/* View All button */}
         <div ref={viewAllRef} className="shrink-0">
           <Button
             variant="elevated"

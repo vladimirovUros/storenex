@@ -5,17 +5,7 @@ import {
   parseAsStringLiteral,
 } from "nuqs";
 
-const sortValues = [
-  "curated",
-  "hot_and_new",
-  "trending",
-  // "price-asc",
-  // "price-desc",
-  // "relevance",
-  // "best-selling",
-  // "highest-rated",
-  // "most-discounted",
-] as const;
+const sortValues = ["curated", "hot_and_new", "trending"] as const;
 
 const params = {
   search: parseAsString

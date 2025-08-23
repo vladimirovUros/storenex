@@ -30,27 +30,18 @@ export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
         },
         {
           getNextPageParam: (lastPage) => {
-            // Comprehensive safety checks
             if (!lastPage) {
               return undefined;
             }
-
-            // Check if docs exists and is an array
             if (!lastPage.docs || !Array.isArray(lastPage.docs)) {
               return undefined;
             }
-
-            // Check if page exists
             if (typeof lastPage.page !== "number") {
               return undefined;
             }
-
-            // Check if hasNextPage exists and is true
             if (!lastPage.hasNextPage) {
               return undefined;
             }
-
-            // Return next page number
             return lastPage.page + 1;
           },
         }
@@ -92,7 +83,6 @@ export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
       <div className="flex justify-center pt-8">
         {hasNextPage && (
           <Button
-            // className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
             className="font-medium disabled:opacity-50 text-base bg-white"
             onClick={() => fetchNextPage()}
             disabled={isFetchingNextPage}

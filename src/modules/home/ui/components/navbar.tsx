@@ -54,9 +54,9 @@ export const Navbar = () => {
   const trpc = useTRPC();
   const session = useQuery({
     ...trpc.auth.session.queryOptions(),
-    staleTime: 0, // Always consider data stale
-    refetchOnMount: true, // Always refetch when component mounts
-    refetchOnWindowFocus: true, // Refetch when user focuses window
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
   return (
     <nav className="h-20 flex border-b justify-between font-medium bg-white">
@@ -121,7 +121,6 @@ export const Navbar = () => {
           className="size-12 border-transparent bg-white"
           onClick={() => setSidebarOpen(true)}
           aria-label="Open menu"
-          // aria-expanded={isSidebarOpen}
         >
           <MenuIcon />
         </Button>

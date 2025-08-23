@@ -19,16 +19,14 @@ interface Props {
 }
 
 export const dynamic = "auto";
-export const revalidate = 300; // Cache for 5 minutes
+export const revalidate = 300;
 
 const Page = async ({ params, searchParams }: Props) => {
   const { category } = await params;
   const filters = await loadProductFilters(searchParams);
 
-  // Validate category using direct Payload access
   const payload = await getPayload({ config: configPromise });
 
-  // Find category (only parent categories)
   const categoryData = await payload.find({
     collection: "categories",
     limit: 1,
@@ -43,14 +41,12 @@ const Page = async ({ params, searchParams }: Props) => {
     },
   });
 
-  // If category doesn't exist, redirect to home with toast
   if (categoryData.docs.length === 0) {
     redirect("/?category_not_found=true");
   }
 
   const queryClient = getQueryClient();
 
-  // Use Promise.all for parallel prefetching
   try {
     await Promise.all([
       queryClient.prefetchQuery(trpc.categories.getMany.queryOptions()),
@@ -63,12 +59,10 @@ const Page = async ({ params, searchParams }: Props) => {
       ),
     ]);
   } catch (error) {
-    // Log but don't block rendering
     console.warn("Prefetch failed:", error);
   }
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      {/* Add SearchFilters for category navigation */}
       <Suspense fallback={<SearchFiltersLoading />}>
         <SearchFilters />
       </Suspense>

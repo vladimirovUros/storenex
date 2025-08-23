@@ -16,7 +16,6 @@ export async function GET(request: NextRequest) {
 
     const payload = await getPayload({ config });
 
-    // Pronađi korisnika po verification tokenu
     const users = await payload.find({
       collection: "users",
       where: {
@@ -39,7 +38,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Proveri da li je token istekao
     if (
       user.verificationTokenExpiry &&
       new Date(user.verificationTokenExpiry) < new Date()
@@ -50,7 +48,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Verifikuj korisnika
     await payload.update({
       collection: "users",
       id: user.id,

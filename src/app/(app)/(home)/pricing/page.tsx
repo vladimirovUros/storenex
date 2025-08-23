@@ -60,7 +60,7 @@ const Page = () => {
 
   const calculateProfit = (revenue: number) => {
     const storenexFee = revenue * 0.03;
-    const competitorFee = revenue * 0.05 + 29; // 5% + $29 monthly
+    const competitorFee = revenue * 0.05 + 29;
     return {
       storenex: revenue - storenexFee,
       competitor: revenue - competitorFee,
@@ -77,13 +77,7 @@ const Page = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black text-white">
-        {/* Decorative elements */}
-        {/* <div className="absolute top-20 left-10 w-20 h-20 bg-orange-500 rounded-2xl transform rotate-12 opacity-80"></div>
-        <div className="absolute top-40 right-20 w-16 h-16 bg-orange-500 rounded-2xl opacity-80"></div>
-        <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-orange-500 transform rotate-45 opacity-80"></div> */}
-
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-6xl md:text-8xl font-black leading-tight mb-8">
@@ -108,8 +102,6 @@ const Page = () => {
           </div>
         </div>
       </div>
-
-      {/* Pricing Tiers */}
       <div className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -184,7 +176,6 @@ const Page = () => {
         </div>
       </div>
 
-      {/* Interactive Calculator */}
       <div className="py-20 bg-gradient-to-br from-yellow-100 via-orange-50 to-green-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -302,8 +293,6 @@ const Page = () => {
           </div>
         </div>
       </div>
-
-      {/* Stats */}
       <div className="py-20 bg-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-5xl font-black text-center mb-16">
@@ -328,7 +317,6 @@ const Page = () => {
         </div>
       </div>
 
-      {/* CTA */}
       <div className="py-20 bg-gradient-to-r from-orange-500 via-yellow-500 to-green-500">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-5xl font-black text-black mb-8">

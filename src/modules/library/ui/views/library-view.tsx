@@ -22,10 +22,6 @@ export const LibraryView = () => {
         <Suspense fallback={<ProductListSkeleton />}>
           <ProductList />
         </Suspense>
-        {/* <div className="max-w-(--breakpoint-xl) mx-auto px-4 lg:px-12">
-          <h2 className="text-[32px] font-medium">Your Library</h2>
-          <p className="font-medium">Here you can find all your saved items.</p>
-        </div> */}
       </section>
     </div>
   );

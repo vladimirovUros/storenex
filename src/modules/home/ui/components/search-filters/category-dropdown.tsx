@@ -30,19 +30,12 @@ export const CategoryDropdown = ({
     setIsOpen(false);
   };
 
-  // const toggleDropdown = () => { for mobile view potentially good
-  //   if (category.subcategories?.length) {
-  //     setIsOpen((open) => !open);
-  //   }
-  // };
-
   return (
     <div
       className="relative"
       ref={dropdownRef}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      // onClick={toggleDropdown}
     >
       <div className="relative">
         <Button

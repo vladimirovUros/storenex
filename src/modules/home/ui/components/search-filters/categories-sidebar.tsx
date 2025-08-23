@@ -35,7 +35,6 @@ export const CategoriesSidebar = ({
     CategoriesGetManyOutput[number] | null
   >(null);
 
-  //if we have parent categories, show those, otherwise show the root categories
   const currentCategories = parentCategories ?? data ?? [];
 
   const handleOpenChange = (open: boolean) => {
@@ -46,17 +45,12 @@ export const CategoriesSidebar = ({
 
   const handleCategoryClick = (category: CategoriesGetManyOutput[number]) => {
     if (category.subcategories && category.subcategories.length > 0) {
-      // If the category has subcategories, set it as the parent
       setParentCategories(category.subcategories as CategoriesGetManyOutput);
       setSelectedCategory(category);
-      // Update the current categories to show subcategories
     } else {
-      // This is a leaf category, (no subcategories)
       if (parentCategories && selectedCategory) {
-        //This is a subcategory, navigate to /category/subcategory
         router.push(`/${selectedCategory.slug}/${category.slug}`);
       } else {
-        // This is a main category, navigate to /category
         if (category.slug === "all") {
           router.push("/");
         } else {
@@ -69,11 +63,9 @@ export const CategoriesSidebar = ({
 
   const handleBackClick = () => {
     if (parentCategories && selectedCategory) {
-      // If we have parent categories, go back to the previous level
       setParentCategories(null);
       setSelectedCategory(null);
     } else {
-      // If we are at the root level, close the sidebar
       handleOpenChange(false);
     }
   };

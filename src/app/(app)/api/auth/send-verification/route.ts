@@ -16,7 +16,6 @@ export async function POST(request: NextRequest) {
 
     const payload = await getPayload({ config });
 
-    // Pronađi korisnika po email-u
     const users = await payload.find({
       collection: "users",
       where: {
@@ -43,13 +42,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generiši novi verification token
     const verificationToken = crypto.randomBytes(32).toString("hex");
     const verificationTokenExpiry = new Date(
       Date.now() + 24 * 60 * 60 * 1000
-    ).toISOString(); // 24 sata
+    ).toISOString();
 
-    // Ažuriraj korisnika sa novim tokenom
     await payload.update({
       collection: "users",
       id: user.id,
@@ -61,7 +58,6 @@ export async function POST(request: NextRequest) {
 
     const verificationUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/verify-email?token=${verificationToken}`;
 
-    // Email template za verifikaciju
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 20px; text-align: center;">
@@ -115,7 +111,7 @@ export async function POST(request: NextRequest) {
 
     await resend.emails.send({
       from: "storenex <contact@storenex.shop>",
-      to: ["urosvladimirov@gmail.com"], // TESTIRANJE - svi verifikacioni emailovi idu na tvoj email
+      to: ["urosvladimirov@gmail.com"],
       subject: "Complete your storenex registration",
       html: emailHtml,
     });

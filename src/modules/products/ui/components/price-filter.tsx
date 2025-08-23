@@ -32,7 +32,6 @@ export const PriceFilter = ({
   onMaxPriceChange,
 }: Props) => {
   const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-    //Get the raw input value and extract only numeric values
     const numericValue = e.target.value.replace(/[^0-9.]/g, "");
     onMinPriceChange?.(numericValue);
   };
@@ -54,12 +53,6 @@ export const PriceFilter = ({
           placeholder="$0.00"
           value={formatAsCurrency(minPrice ?? "")}
           onChange={handleMinPriceChange}
-          //   onBlur={(e) => {
-          //     const formattedValue = formatAsCurrency(e.target.value);
-          //     if (onMinPriceChange) {
-          //       onMinPriceChange(formattedValue.replace(/[^0-9.]/g, ""));
-          //     }
-          //   }}
         />
       </div>
       <div className="flex flex-col gap-2">
@@ -72,12 +65,6 @@ export const PriceFilter = ({
           placeholder="∞"
           value={formatAsCurrency(maxPrice ?? "")}
           onChange={handleMaxPriceChange}
-          //   onBlur={(e) => {
-          //     const formattedValue = formatAsCurrency(e.target.value);
-          //     if (onMaxPriceChange) {
-          //       onMaxPriceChange(formattedValue.replace(/[^0-9.]/g, ""));
-          //     }
-          //   }}
         />
       </div>
     </div>

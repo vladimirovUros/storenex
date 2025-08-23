@@ -58,7 +58,6 @@ export const TagsFilter = ({ value, onChange }: TagsFilterProps) => {
       {hasNextPage && (
         <button
           className="hover:underline cursor-pointer disabled:opacity-50"
-          //   className="underline font-medium justify-start text-start disabled:opacity-50"
           onClick={() => fetchNextPage()}
           disabled={isFetchingNextPage}
         >

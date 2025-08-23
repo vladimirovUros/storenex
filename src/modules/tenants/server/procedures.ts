@@ -15,7 +15,7 @@ export const tenantsRouter = createTRPCRouter({
 
       const tenantsData = await payload.find({
         collection: "tenants",
-        depth: 1, // "tenant.image is a type of "Media" and we want to fetch it.... But we alredy explained that payload local API does not change typescript depending on the depth, so i need to do it manually".. Kad bi bilo depth 0, ne bi radilo tj ne vi se videla slika.
+        depth: 1, // "tenant.image is a type of "Media" and I want to fetch it.... But I alredy saw that payload local API does not change typescript depending on the depth, so i need to do it manually.. Kad bi bilo depth 0, ne bi radilo tj ne vi se videla slika.
         where: {
           slug: {
             equals: input.slug,

@@ -29,9 +29,6 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
 
   const purchase = useMutation(
     trpc.checkout.purchase.mutationOptions({
-      // onMutate: () => {
-      //   setStates((prev) => ({ ...prev, success: false, cancel: false }));
-      // },
       onMutate: () => {
         setStates({ success: false, cancel: false });
       },
@@ -41,7 +38,6 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
       onError: (error) => {
         toast.error(error.message);
         if (error.data?.code === "UNAUTHORIZED") {
-          // Kašnjenje od 1.5 sekunde da korisnik vidi toast
           setTimeout(() => {
             redirectToSignIn();
           }, 1500);

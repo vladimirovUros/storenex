@@ -11,23 +11,18 @@ export const Orders: CollectionConfig = {
   },
   access: {
     read: ({ req }) => {
-      // Super admin vidi sve (bez tenant filtering kada nije selected)
       if (isSuperAdmin(req.user)) {
         return true;
       }
 
       if (req.user) {
-        // Za obične usere - kombinujemo user i tenant logiku
         const conditions: Where[] = [
-          // Svoje kupljene ordere
           {
             user: {
               equals: req.user.id,
             },
           },
         ];
-
-        // Ako ima tenant-e, može da vidi i ordere svojih proizvoda
         if (req.user.tenants && req.user.tenants.length > 0) {
           req.user.tenants.forEach((tenantRelation) => {
             const tenantId =
@@ -44,16 +39,13 @@ export const Orders: CollectionConfig = {
             }
           });
         }
-
         return {
           or: conditions,
         };
       }
-
       return false;
     },
     create: ({ req }) => {
-      // Allow webhook system calls (when no user context)
       if (!req.user) {
         return true;
       }

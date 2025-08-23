@@ -10,14 +10,12 @@ export const StripeVerify = () => {
 
   useEffect(() => {
     const checkVerificationStatus = async () => {
-      // Provjeri da li user ima tenant-e
       if (!user?.tenants || user.tenants.length === 0) {
         setLoading(false);
         return;
       }
 
       try {
-        // Uzmi prvi tenant (ili možeš dodati logiku za odabir)
         const firstTenant = user.tenants[0];
         const tenantId =
           typeof firstTenant.tenant === "string"
@@ -28,8 +26,6 @@ export const StripeVerify = () => {
           setLoading(false);
           return;
         }
-
-        // Fetch tenant data to check stripeDetailsSubmitted
         const response = await fetch(`/api/tenants/${tenantId}`, {
           credentials: "include",
         });
@@ -47,17 +43,12 @@ export const StripeVerify = () => {
 
     checkVerificationStatus();
   }, [user]);
-
-  // Don't show anything if loading
   if (loading) {
     return null;
   }
-
-  // Don't show verify button if user doesn't have tenants or is already verified
   if (!user?.tenants || user.tenants.length === 0 || isVerified) {
     return null;
   }
-
   return (
     <>
       <h5>Verify your Stripe account</h5>

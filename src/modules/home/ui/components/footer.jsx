@@ -13,16 +13,13 @@ import {
 export const Footer = () => {
   return (
     <footer className="relative bg-white border-t-4 border-black overflow-hidden">
-      {/* SMALLER BACKGROUND DECORATIONS */}
       <div className="absolute top-0 left-[15%] w-16 h-8 bg-yellow-300 border-2 border-black rotate-12 -translate-y-1/2 rounded-[10px]"></div>
       <div className="absolute top-0 right-[20%] w-12 h-12 bg-orange-500 border-2 border-black -rotate-45 -translate-y-1/2 rounded-full"></div>
       <div className="absolute bottom-0 left-[30%] w-12 h-12 bg-green-400 border-2 border-black rotate-[30deg] translate-y-1/2"></div>
 
       <div className="container mx-auto px-4 py-4 relative z-10">
         <div className="max-w-4xl mx-auto">
-          {/* COMPACT FOOTER CONTENT */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            {/* COMPANY INFO */}
             <div className="space-y-6">
               <div className="relative">
                 <div className="absolute top-2 left-2 w-full h-full bg-black rounded-[15px]"></div>
@@ -64,8 +61,6 @@ export const Footer = () => {
                 </Link>
               </div>
             </div>
-
-            {/* QUICK LINKS */}
             <div className="space-y-6">
               <div className="relative">
                 <div className="absolute top-2 left-2 w-full h-full bg-black rounded-[15px]"></div>
@@ -98,8 +93,6 @@ export const Footer = () => {
                 ))}
               </div>
             </div>
-
-            {/* SUPPORT & LEGAL */}
             <div className="space-y-4">
               <div className="relative">
                 <div className="absolute top-2 left-2 w-full h-full bg-black rounded-[15px]"></div>
@@ -132,8 +125,6 @@ export const Footer = () => {
                   </Link>
                 ))}
               </div>
-
-              {/* CONTACT INFO - COMPACT */}
               <div className="flex gap-4 pt-2">
                 <div className="flex items-center gap-2">
                   <div className="relative">
@@ -156,24 +147,17 @@ export const Footer = () => {
               </div>
             </div>
           </div>
-
-          {/* DIVIDER LINE */}
           <div className="relative my-6">
             <div className="h-1 bg-black"></div>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-yellow-300 border-3 border-black rotate-45 rounded-lg"></div>
           </div>
-
-          {/* BOTTOM SECTION - COMPACT */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            {/* COPYRIGHT - SMALLER */}
             <div className="relative">
               <div className="absolute top-1 left-1 w-full h-full bg-black rounded-[15px]"></div>
               <div className="relative bg-white border-3 border-black px-4 py-2 rounded-[15px] rotate-1">
                 <p className="font-bold text-sm">© 2025 STORENEX Inc.</p>
               </div>
             </div>
-
-            {/* MADE WITH LOVE - COMPACT */}
             <Link
               href="https://github.com/vladimirovUros"
               target="_blank"
@@ -185,8 +169,6 @@ export const Footer = () => {
                 <div className="relative bg-orange-500 border-4 border-black px-6 py-3 rounded-[20px] -rotate-1 group-hover:-translate-x-1 group-hover:-translate-y-1 transition-all">
                   <p className="text-lg font-black text-white flex items-center gap-2">
                     Made by{" "}
-                    {/* with{" "}
-                    <Heart className="h-5 w-5 fill-white stroke-white animate-pulse" />{" "} */}
                     <span className="bg-white text-black px-2 py-1 border-2 border-black rotate-1 rounded-lg text-sm group-hover:bg-yellow-300 transition-colors">
                       vladimirovUros
                     </span>
@@ -194,8 +176,6 @@ export const Footer = () => {
                 </div>
               </div>
             </Link>
-
-            {/* BRUTAL BADGE - SMALLER */}
             <div className="relative">
               <div className="absolute top-1 left-1 w-full h-full bg-black rounded-[15px]"></div>
               <div className="relative bg-green-400 border-3 border-black px-4 py-2 rounded-[15px] -rotate-1">

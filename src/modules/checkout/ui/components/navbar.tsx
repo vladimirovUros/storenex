@@ -1,7 +1,6 @@
 import { generateTenantURL } from "@/lib/utils";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-// import { CheckoutButton } from "@/modules/checkout/ui/components/checkout-button";
 
 interface Props {
   slug: string;

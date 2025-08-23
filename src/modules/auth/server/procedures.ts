@@ -1,7 +1,6 @@
 import { headers as getHeaders } from "next/headers";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-// import { AUTH_COOKIE } from "../constants";
 import { loginSchema, registerSchema } from "../schemas";
 import { generateAuthCookie } from "../utils";
 import { stripe } from "@/lib/stripe";
@@ -12,17 +11,8 @@ export const authRouter = createTRPCRouter({
 
     const session = await ctx.dataBase.auth({ headers });
 
-    // console.log(session);
-
     return session || null;
   }),
-  // logout: baseProcedure.mutation(async () => {
-  //   const cookies = await getCookies();
-  //   cookies.delete({
-  //     name: AUTH_COOKIE,
-  //     // path: "/",
-  //   });
-  // }),
   register: baseProcedure
     .input(registerSchema)
     .mutation(async ({ input, ctx }) => {
@@ -85,7 +75,7 @@ export const authRouter = createTRPCRouter({
             email: input.email,
             username: input.username,
             password: input.password,
-            isVerified: false, // Eksplicitno postaviti na false
+            isVerified: false,
             tenants: [
               {
                 tenant: tenant.id,
@@ -94,15 +84,12 @@ export const authRouter = createTRPCRouter({
           },
         });
 
-        // NE prijavljuj korisnika automatski - mora prvo da verifikuje email
         return {
           success: true,
           message:
             "Account created successfully! Please check your email to verify your account.",
         };
       } catch (error: unknown) {
-        // console.log("Registration error:", error);!!!!!!!!!!!!!!!
-
         if (error instanceof TRPCError) {
           throw error;
         }
@@ -122,7 +109,6 @@ export const authRouter = createTRPCRouter({
     }),
   login: baseProcedure.input(loginSchema).mutation(async ({ input, ctx }) => {
     try {
-      // Prvo pronađi korisnika da proveriš da li je verifikovan
       const users = await ctx.dataBase.find({
         collection: "users",
         where: {
@@ -146,8 +132,6 @@ export const authRouter = createTRPCRouter({
           message: "Invalid email or password.",
         });
       }
-
-      // Proveri da li je korisnik verifikovan
       if (!user.isVerified) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -167,7 +151,7 @@ export const authRouter = createTRPCRouter({
       if (!data || !data.token) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "Invalid email or password.", // Opšta poruka
+          message: "Invalid email or password.",
         });
       }
 

@@ -3,7 +3,7 @@
 import Image, { ImageProps } from "next/image";
 import { useState } from "react";
 
-interface OptimizedImageProps extends Omit<ImageProps, 'onLoad' | 'onError'> {
+interface OptimizedImageProps extends Omit<ImageProps, "onLoad" | "onError"> {
   fallbackSrc?: string;
 }
 
@@ -18,7 +18,7 @@ export const OptimizedImage = ({
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div className={`relative ${isLoading ? 'animate-pulse bg-gray-200' : ''}`}>
+    <div className={`relative ${isLoading ? "animate-pulse bg-gray-200" : ""}`}>
       <Image
         {...props}
         src={imgSrc || fallbackSrc}

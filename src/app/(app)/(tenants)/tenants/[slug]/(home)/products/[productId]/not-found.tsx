@@ -3,14 +3,13 @@
 import Link from "next/link";
 
 export default function ProductNotFound() {
-  // Neobrutalist stilovi konzistentni sa error.tsx
   const containerStyle = {
     position: "fixed" as const,
     top: 0,
     left: 0,
     width: "100vw",
     height: "100vh",
-    backgroundColor: "#fef7cd", // svetlo žuta pozadina
+    backgroundColor: "#fef7cd",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -31,7 +30,7 @@ export default function ProductNotFound() {
 
   const triangleStyle = {
     fontSize: "3rem",
-    color: "#fbbf24", // žuta boja
+    color: "#fbbf24",
     marginBottom: "1rem",
     display: "block",
   };
@@ -62,7 +61,7 @@ export default function ProductNotFound() {
   };
 
   const buttonStyle = {
-    backgroundColor: "#06b6d4", // teal
+    backgroundColor: "#06b6d4",
     color: "white",
     padding: "0.75rem 1.5rem",
     border: "3px solid black",
@@ -80,7 +79,7 @@ export default function ProductNotFound() {
 
   const secondaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "#22c55e", // green
+    backgroundColor: "#22c55e",
     transform: "rotate(1deg)",
   };
 

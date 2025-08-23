@@ -214,10 +214,7 @@ const Page = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden">
-      {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-x-hidden">
-        {/* Decorative elements */}
-
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-8xl font-black leading-tight mb-8 break-words">
@@ -242,8 +239,6 @@ const Page = () => {
           </div>
         </div>
       </div>
-
-      {/* Category Navigation */}
       <div className="py-12 bg-white border-b-4 border-black overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center gap-4">
@@ -264,8 +259,6 @@ const Page = () => {
           </div>
         </div>
       </div>
-
-      {/* Features Grid */}
       <div className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -292,8 +285,6 @@ const Page = () => {
           </div>
         </div>
       </div>
-
-      {/* Integrations */}
       <div className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -320,8 +311,6 @@ const Page = () => {
           </div>
         </div>
       </div>
-
-      {/* Testimonials */}
       <div className="py-20 bg-gradient-to-br from-yellow-100 via-orange-50 to-green-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -358,8 +347,6 @@ const Page = () => {
           </div>
         </div>
       </div>
-
-      {/* Feature Comparison */}
       <div className="py-20 bg-black text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -417,8 +404,6 @@ const Page = () => {
           </div>
         </div>
       </div>
-
-      {/* CTA Section */}
       <div className="py-20 bg-gradient-to-r from-orange-500 via-yellow-500 to-green-500">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl sm:text-5xl font-black text-black mb-8">

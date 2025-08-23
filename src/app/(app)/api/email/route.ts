@@ -7,7 +7,6 @@ export async function POST(request: NextRequest) {
   try {
     const { name, email, subject, message, category } = await request.json();
 
-    // Validacija
     if (!name || !email || !subject || !message) {
       return NextResponse.json(
         { error: "You need to fill in all required fields" },
@@ -15,7 +14,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Email template
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center;">

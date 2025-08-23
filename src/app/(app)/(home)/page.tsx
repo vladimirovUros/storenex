@@ -20,11 +20,8 @@ interface Props {
 const Page = async ({ searchParams }: Props) => {
   const filters = await loadProductFilters(searchParams);
 
-  // console.log(JSON.stringify(filters), "THIS IS FROM RSC");
-
   const queryClient = getQueryClient();
 
-  // Prefetch categories for search filters
   void queryClient.prefetchQuery(trpc.categories.getMany.queryOptions());
 
   void queryClient.prefetchInfiniteQuery(
@@ -36,7 +33,6 @@ const Page = async ({ searchParams }: Props) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      {/* Add SearchFilters only on homepage */}
       <Suspense fallback={<SearchFiltersLoading />}>
         <SearchFilters />
       </Suspense>

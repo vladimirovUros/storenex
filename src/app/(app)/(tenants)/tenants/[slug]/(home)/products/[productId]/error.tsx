@@ -9,14 +9,13 @@ interface Props {
 }
 
 export default function ProductError({ error, reset }: Props) {
-  // Neobrutalist stilovi - kompaktna verzija kao na slici
   const containerStyle = {
     position: "fixed" as const,
     top: 0,
     left: 0,
     width: "100vw",
     height: "100vh",
-    backgroundColor: "#fef7cd", // svetlo žuta pozadina preko celog ekrana
+    backgroundColor: "#fef7cd",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -37,7 +36,7 @@ export default function ProductError({ error, reset }: Props) {
 
   const triangleStyle = {
     fontSize: "3rem",
-    color: "#fbbf24", // žuta boja
+    color: "#fbbf24",
     marginBottom: "1rem",
     display: "block",
   };
@@ -68,7 +67,7 @@ export default function ProductError({ error, reset }: Props) {
   };
 
   const buttonStyle = {
-    backgroundColor: "#06b6d4", // teal
+    backgroundColor: "#06b6d4",
     color: "white",
     padding: "0.75rem 1.5rem",
     border: "3px solid black",
@@ -86,13 +85,13 @@ export default function ProductError({ error, reset }: Props) {
 
   const secondaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "#22c55e", // green
+    backgroundColor: "#22c55e",
     transform: "rotate(1deg)",
   };
 
   const retryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "#ef4444", // red
+    backgroundColor: "#ef4444",
     transform: "rotate(1deg)",
   };
 
@@ -116,8 +115,6 @@ export default function ProductError({ error, reset }: Props) {
     );
     target.style.boxShadow = "4px 4px 0px black";
   };
-
-  // Check for product not found (either NOT_FOUND code or "Not Found" message)
   if (
     error instanceof TRPCClientError &&
     (error.data?.code === "NOT_FOUND" ||
@@ -152,8 +149,6 @@ export default function ProductError({ error, reset }: Props) {
       </div>
     );
   }
-
-  // For other errors, use your existing style but more specific
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>

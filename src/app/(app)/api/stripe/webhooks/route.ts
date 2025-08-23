@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     );
   }
   console.log(`✅ Success: ${event.id}, ${event.type}`);
-  console.log("🏢 Account:", event.account); // DODATO - debug info
+  console.log("🏢 Account:", event.account);
 
   const permittedEvents: string[] = [
     "checkout.session.completed",
@@ -76,14 +76,14 @@ export async function POST(request: Request) {
           console.log("✅ User found:", user.id);
 
           console.log("🔍 Retrieving expanded session...");
-          // 🚀 KLJUČNA IZMENA - dodao stripeAccount
+
           const expandedSession = await stripe.checkout.sessions.retrieve(
             data.id,
             {
               expand: ["line_items.data.price.product"],
             },
             {
-              stripeAccount: event.account, // OVO JE BILO POTREBNO!
+              stripeAccount: event.account,
             }
           );
 
@@ -114,7 +114,6 @@ export async function POST(request: Request) {
 
             console.log("🔍 Looking for product in Payload using metadata...");
 
-            // Koristi metadata koji si postavio u checkout proceduri
             const payloadProductId = item.price.product.metadata?.id;
 
             if (!payloadProductId) {
@@ -155,7 +154,6 @@ export async function POST(request: Request) {
 
             console.log("💾 Creating order...");
 
-            // Dobij tenant ID iz produkt-a
             const tenantId =
               typeof product.tenant === "string"
                 ? product.tenant
@@ -170,7 +168,7 @@ export async function POST(request: Request) {
                 user: user.id,
                 product: product.id,
                 name: item.price.product.name,
-                tenant: tenantId, // Dodaj tenant field za multi-tenant
+                tenant: tenantId,
                 stripeAccountId: event.account,
               },
               overrideAccess: true,

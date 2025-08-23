@@ -16,9 +16,8 @@ export const Products: CollectionConfig = {
 
       const tenant = req.user?.tenants?.[0]?.tenant as Tenant;
 
-      return Boolean(tenant?.stripeDetailsSubmitted); //zabrana tenantima da kreiraju proizvode osim ako nisu popunili stripe podatke
+      return Boolean(tenant?.stripeDetailsSubmitted);
     },
-    // update: ({ req }) => isSuperAdmin(req.user),
     delete: ({ req }) => isSuperAdmin(req.user),
   },
   fields: [

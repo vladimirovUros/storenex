@@ -31,7 +31,6 @@ export const SearchInput = ({
     setIsClient(true);
   }, []);
 
-  // Ažuriraj searchValue kada se defaultValue promeni (npr. Clear All)
   useEffect(() => {
     setSearchValue(defaultValue || "");
   }, [defaultValue]);

@@ -14,7 +14,6 @@ import {
 import { Suspense } from "react";
 
 interface Props {
-  // params: Promise<{ subcategory: string }>;
   params: Promise<{ category: string; subcategory: string }>;
   searchParams: Promise<SearchParams>;
 }
@@ -22,14 +21,11 @@ interface Props {
 export const dynamic = "force-dynamic";
 
 const Page = async ({ params, searchParams }: Props) => {
-  // const { subcategory } = await params;
   const { category, subcategory } = await params;
   const filters = await loadProductFilters(searchParams);
 
-  // Validate subcategory using direct Payload access
   const payload = await getPayload({ config: configPromise });
 
-  // Find parent category
   const parentCategoryData = await payload.find({
     collection: "categories",
     limit: 1,
@@ -47,27 +43,21 @@ const Page = async ({ params, searchParams }: Props) => {
 
   const parentCategory = parentCategoryData.docs[0];
 
-  // If parent category doesn't exist, redirect to home
   if (!parentCategory) {
     redirect("/?category_not_found=true");
   }
 
-  // Check if subcategory exists and belongs to parent
   const subcategories = parentCategory.subcategories?.docs ?? [];
   const subcategoryExists = subcategories.some(
     (subcat) => typeof subcat === "object" && subcat.slug === subcategory
   );
 
-  // If subcategory doesn't exist, redirect to parent category
   if (!subcategoryExists) {
     redirect(`/${category}?subcategory_not_found=${subcategory}`);
   }
 
-  // console.log(JSON.stringify(filters), "THIS IS FROM RSC");
-
   const queryClient = getQueryClient();
 
-  // Prefetch categories for search filters
   void queryClient.prefetchQuery(trpc.categories.getMany.queryOptions());
 
   void queryClient.prefetchInfiniteQuery(
@@ -79,7 +69,6 @@ const Page = async ({ params, searchParams }: Props) => {
   );
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      {/* Add SearchFilters for subcategory navigation */}
       <Suspense fallback={<SearchFiltersLoading />}>
         <SearchFilters />
       </Suspense>

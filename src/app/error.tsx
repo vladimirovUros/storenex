@@ -9,10 +9,9 @@ interface Props {
 }
 
 export default function Error({ error, reset }: Props) {
-  // Neobrutalist stilovi
   const containerStyle = {
     minHeight: "100vh",
-    backgroundColor: "#fef7cd", // svetlo žuta pozadina
+    backgroundColor: "#fef7cd",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -56,7 +55,7 @@ export default function Error({ error, reset }: Props) {
   };
 
   const buttonStyle = {
-    backgroundColor: "#ef4444", // crvena
+    backgroundColor: "#ef4444",
     color: "white",
     padding: "1rem 2rem",
     border: "3px solid black",
@@ -74,7 +73,7 @@ export default function Error({ error, reset }: Props) {
 
   const secondaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "#06b6d4", // teal
+    backgroundColor: "#06b6d4",
     transform: "rotate(-1deg)",
   };
 

@@ -11,14 +11,11 @@ export function SubcategoryRedirectToast() {
   const tenantNotFound = searchParams.get("tenant_not_found");
 
   useEffect(() => {
-    // Add slight delay to ensure toast provider is ready
     const timeoutId = setTimeout(() => {
       if (subcategoryNotFound) {
         toast.warning(
           `Subcategory "${subcategoryNotFound}" not found. Instead, showing parent category.`
         );
-
-        // Remove the parameter from URL without page reload
         const url = new URL(window.location.href);
         url.searchParams.delete("subcategory_not_found");
         window.history.replaceState({}, "", url.toString());
@@ -26,8 +23,6 @@ export function SubcategoryRedirectToast() {
 
       if (categoryNotFound) {
         toast.warning("Category not found. Redirected to home page.");
-
-        // Remove the parameter from URL without page reload
         const url = new URL(window.location.href);
         url.searchParams.delete("category_not_found");
         window.history.replaceState({}, "", url.toString());
@@ -35,8 +30,6 @@ export function SubcategoryRedirectToast() {
 
       if (tenantNotFound) {
         toast.warning("Store not found. Redirected to home page.");
-
-        // Remove the parameter from URL without page reload
         const url = new URL(window.location.href);
         url.searchParams.delete("tenant_not_found");
         window.history.replaceState({}, "", url.toString());

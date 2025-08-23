@@ -13,8 +13,6 @@ import { Fragment, useState } from "react";
 import { toast } from "sonner";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 
-// import { CartButton } from "../components/cart-button";
-
 const CartButton = dynamic(
   () => import("../components/cart-button").then((mod) => mod.CartButton),
   {
@@ -35,7 +33,7 @@ interface ProductViewProps {
 export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(
-    trpc.products.getOne.queryOptions({ 
+    trpc.products.getOne.queryOptions({
       id: productId,
     })
   );
@@ -53,7 +51,7 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
             sizes="100vw"
             quality={90}
             className="object-cover"
-            priority={true} // Load product image with priority
+            priority={true}
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-6">
@@ -127,33 +125,6 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
                     productId={productId}
                     tenantSlug={tenantSlug}
                   />
-                  {/* <Button
-                    className="size-12"
-                    variant="elevated"
-                    onClick={() => {
-                      navigator.clipboard.writeText(window.location.href);
-                      toast.success("🔗 URL COPIED!", {
-                        duration: 2000,
-                        style: {
-                          // background: "#fef7cd", // žuta pozadina
-                          background: "#22c55e",
-                          color: "black",
-                          border: "4px solid black",
-                          boxShadow: "6px 6px 0px black",
-                          borderRadius: "0px",
-                          fontWeight: "900",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.1em",
-                          fontSize: "16px",
-                          fontFamily: "system-ui, monospace",
-                          transform: "rotate(-1deg)",
-                        },
-                      });
-                    }}
-                    disabled={false}
-                  >
-                    <LinkIcon className="size-5" />
-                  </Button> */}
                   <Button
                     className="size-12"
                     variant="elevated"

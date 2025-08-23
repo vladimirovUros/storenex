@@ -23,14 +23,11 @@ export const StarRating = ({
     const starPosition = starIndex + 1;
 
     if (safeRating >= starPosition) {
-      // Full star
       return { type: "full", percentage: 100 };
     } else if (safeRating > starPosition - 1) {
-      // Partial star - calculate exact percentage
       const percentage = (safeRating - (starPosition - 1)) * 100;
       return { type: "partial", percentage: Math.round(percentage) };
     } else {
-      // Empty star
       return { type: "empty", percentage: 0 };
     }
   };
@@ -42,10 +39,7 @@ export const StarRating = ({
 
         return (
           <div key={index} className="relative inline-block">
-            {/* Background (empty) star */}
             <StarIcon className={cn("size-4 text-gray-300", iconClassName)} />
-
-            {/* Filled portion */}
             {starState.type !== "empty" && (
               <div
                 className="absolute top-0 left-0 overflow-hidden"

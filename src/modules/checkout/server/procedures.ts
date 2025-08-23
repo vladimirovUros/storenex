@@ -119,7 +119,6 @@ export const checkoutRouter = createTRPCRouter({
         });
       }
 
-      //throw error if stripe details not submitted
       const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
         products.docs.map((product) => {
           const roundedPrice = getRoundedPrice(product.price);
@@ -150,12 +149,6 @@ export const checkoutRouter = createTRPCRouter({
       );
 
       const domain = generateTenantURL(input.tenantSlug);
-
-      // if (process.env.NODE_ENV === "development") {
-      //   domain = `${process.env.NEXT_PUBLIC_API_URL}/tenants/${input.tenantSlug}`;
-      // } else {
-      //   domain = `${input.tenantSlug}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
-      // }
 
       const checkout = await stripe.checkout.sessions.create(
         {
@@ -189,7 +182,7 @@ export const checkoutRouter = createTRPCRouter({
   getProducts: baseProcedure
     .input(
       z.object({
-        ids: z.array(z.string()), //.min(1),
+        ids: z.array(z.string()),
       })
     )
     .query(async ({ ctx, input }) => {

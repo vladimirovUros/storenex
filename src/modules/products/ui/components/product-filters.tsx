@@ -38,7 +38,6 @@ export const ProductFilters = ({}) => {
     if (key === "sort") return false;
 
     if (Array.isArray(value)) {
-      // For arrays, check if they are not empty, which indicates that there are selected tags. za tag.. ta se ne bi prikazavalo clear all...
       return value.length > 0;
     }
 

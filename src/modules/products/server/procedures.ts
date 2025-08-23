@@ -18,7 +18,6 @@ export const productsRouter = createTRPCRouter({
       const headers = await getHeaders();
       const session = await ctx.dataBase.auth({ headers });
 
-      // Use parallel queries for better performance
       const [product, reviews] = await Promise.all([
         ctx.dataBase.findByID({
           collection: "products",
@@ -48,7 +47,6 @@ export const productsRouter = createTRPCRouter({
 
       let isPurchased = false;
 
-      // Only check purchase status if user is logged in
       if (session.user) {
         const ordersData = await ctx.dataBase.find({
           collection: "orders",
@@ -137,17 +135,16 @@ export const productsRouter = createTRPCRouter({
       const min = parseFloat(input.minPrice ?? "");
       const max = parseFloat(input.maxPrice ?? "");
 
-      let sort: Sort = "-createdAt"; // Default sort
+      let sort: Sort = "-createdAt";
 
       if (input.sort === "curated") {
-        sort = "-createdAt"; // Default sort for curated
+        sort = "-createdAt";
       } else if (input.sort === "hot_and_new") {
-        sort = "+createdAt"; // Sort by creation date for hot and new
+        sort = "+createdAt";
       } else if (input.sort === "trending") {
         sort = "-createdAt";
       }
 
-      //Backend validation for minPrice and maxPrice
       if (!isNaN(min) && !isNaN(max) && min > max) {
         throw new Error("Minimum price cannot be greater than maximum price.");
       }
@@ -213,7 +210,6 @@ export const productsRouter = createTRPCRouter({
           }
         } catch (error) {
           console.warn("Category lookup failed:", error);
-          // Continue without category filter if lookup fails
         }
       }
 
@@ -242,12 +238,10 @@ export const productsRouter = createTRPCRouter({
           select: {
             content: false,
           },
-          // pagination: true,
         });
 
         const productIds = data.docs.map((doc) => doc.id);
 
-        // Only fetch reviews if we have products
         let reviewsByProductId: Record<string, Review[]> = {};
 
         if (productIds.length > 0) {
@@ -303,7 +297,6 @@ export const productsRouter = createTRPCRouter({
         };
       } catch (error) {
         console.error("Products query failed:", error);
-        // Return empty result on error to prevent crash
         return {
           docs: [],
           totalDocs: 0,

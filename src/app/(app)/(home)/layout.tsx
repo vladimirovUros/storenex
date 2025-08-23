@@ -1,4 +1,3 @@
-//these is where i fetch and format data
 import { Navbar } from "@/modules/home/ui/components/navbar";
 import { Footer } from "@/modules/home/ui/components/footer";
 import { ScrollToTop } from "@/components/scroll-to-top";

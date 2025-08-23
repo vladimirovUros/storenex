@@ -20,7 +20,6 @@ export const StarPicker = ({
   const [hoverValue, setHoverValue] = useState(0);
 
   const handleChange = (value: number) => {
-    // console.log("Star selected:", { value });
     if (disabled) return;
     onChange?.(value);
   };

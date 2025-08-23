@@ -194,7 +194,6 @@ const Page = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black text-white">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28">
           <div className="text-center max-w-4xl mx-auto">
@@ -221,7 +220,6 @@ const Page = () => {
         </div>
       </div>
 
-      {/* Contact Methods */}
       <div className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -259,7 +257,6 @@ const Page = () => {
         </div>
       </div>
 
-      {/* Contact Form */}
       <div className="py-20 bg-gradient-to-br from-yellow-100 via-orange-50 to-red-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -378,7 +375,6 @@ const Page = () => {
         </div>
       </div>
 
-      {/* FAQ Section */}
       <div className="py-20 bg-gray-900 text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -414,59 +410,6 @@ const Page = () => {
           </div>
         </div>
       </div>
-
-      {/* Office Info */}
-      {/* <div className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-5xl font-black mb-12">
-            FIND <span className="text-blue-500">US</span>
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-2xl mb-4">
-                <MapPin className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-black mb-2">HEADQUARTERS</h3>
-              <p className="text-gray-600 font-semibold">
-                123 Creator Street
-                <br />
-                Digital City, DC 12345
-                <br />
-                United States
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-2xl mb-4">
-                <Clock className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="text-xl font-black mb-2">BUSINESS HOURS</h3>
-              <p className="text-gray-600 font-semibold">
-                Monday - Friday
-                <br />
-                9:00 AM - 6:00 PM EST
-                <br />
-                Support: 24/7
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-2xl mb-4">
-                <AlertCircle className="w-8 h-8 text-orange-600" />
-              </div>
-              <h3 className="text-xl font-black mb-2">EMERGENCY</h3>
-              <p className="text-gray-600 font-semibold">
-                Critical issues only
-                <br />
-                emergency@storenex.com
-                <br />
-                +1 (555) 911-HELP
-              </p>
-            </div>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 };

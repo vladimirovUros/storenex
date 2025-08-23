@@ -18,7 +18,6 @@ import Link from "next/link";
 const Page = () => {
   return (
     <div className="min-h-screen bg-[#fef7cd] relative overflow-x-hidden">
-      {/* FLOATING BACKGROUND CHAOS */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-[10%] left-[5%] w-16 h-16 md:w-24 md:h-24 bg-orange-500 border-2 md:border-4 border-black rotate-45 opacity-20"></div>
         <div className="absolute top-[25%] right-[8%] w-12 h-20 md:w-16 md:h-32 bg-green-400 border-2 md:border-4 border-black -rotate-12 opacity-25"></div>
@@ -28,21 +27,16 @@ const Page = () => {
         <div className="absolute bottom-[45%] left-[12%] w-12 h-12 md:w-16 md:h-16 bg-yellow-300 border-2 md:border-4 border-black rotate-[60deg] opacity-25"></div>
       </div>
 
-      {/* HERO SECTION - COMPLETE CHAOS */}
       <div className="relative min-h-screen flex items-center justify-center px-2 sm:px-4 py-12 sm:py-20">
-        {/* MASSIVE BACKGROUND SHAPE */}
         <div className="absolute top-0 left-0 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-orange-500 border-4 md:border-8 border-black rotate-12 opacity-5 rounded-[50px] md:rounded-[100px] -translate-x-1/2 -translate-y-1/2"></div>
 
         <div className="relative max-w-6xl mx-auto w-full">
-          {/* TITLE EXPLOSION */}
           <div className="text-center relative">
             <div className="relative inline-block">
-              {/* BACKGROUND TITLE SHADOW */}
               <div className="absolute top-2 left-2 md:top-4 md:left-4 text-[3rem] sm:text-[5rem] md:text-[8rem] xl:text-[12rem] font-black text-black opacity-20 -rotate-2 leading-none">
                 ABOUT
               </div>
 
-              {/* MAIN TITLE */}
               <h1 className="relative z-10 text-[3rem] sm:text-[5rem] md:text-[8rem] xl:text-[12rem] font-black leading-none">
                 <span className="block -rotate-3 text-black">ABOUT</span>
                 <span className="block rotate-2 text-orange-500 -mt-3 sm:-mt-4 md:-mt-6 xl:-mt-8">
@@ -53,21 +47,16 @@ const Page = () => {
                 </span>
               </h1>
 
-              {/* FLOATING DECORATIONS AROUND TITLE */}
               <Star className="absolute -top-4 -right-6 sm:-top-6 sm:-right-10 md:-top-8 md:-right-16 w-6 h-6 sm:w-10 sm:h-10 md:w-16 md:h-16 fill-yellow-300 stroke-black stroke-2 md:stroke-4 rotate-12 animate-pulse" />
               <Sparkles className="absolute -bottom-4 -left-4 sm:-bottom-8 sm:-left-8 md:-bottom-12 md:-left-12 w-4 h-4 sm:w-8 sm:h-8 md:w-12 md:h-12 fill-green-400 stroke-black stroke-2 md:stroke-3 -rotate-45" />
               <Zap className="absolute top-1/2 -right-6 sm:-right-12 md:-right-20 w-4 h-4 sm:w-6 sm:h-6 md:w-10 md:h-10 fill-orange-500 stroke-black stroke-2 md:stroke-3 rotate-[30deg]" />
               <Rocket className="absolute top-1/4 -left-4 sm:-left-8 md:-left-16 w-6 h-6 sm:w-10 sm:h-10 md:w-14 md:h-14 fill-yellow-300 stroke-black stroke-2 md:stroke-3 -rotate-12" />
             </div>
 
-            {/* FLOATING MISSION BUBBLE */}
             <div className="relative mt-16 sm:mt-24 md:mt-32 flex justify-center">
               <div className="relative max-w-4xl w-full px-2">
-                {/* SHADOW LAYER */}
                 <div className="absolute top-3 left-3 sm:top-6 sm:left-6 w-full h-full bg-black rotate-2"></div>
-                {/* MAIN BUBBLE */}
                 <div className="relative bg-white border-3 sm:border-6 border-black p-6 sm:p-8 md:p-12 -rotate-1 rounded-[20px] sm:rounded-[30px]">
-                  {/* BUBBLE DECORATIONS */}
                   <div className="absolute -top-2 -left-2 sm:-top-4 sm:-left-4 w-4 h-4 sm:w-8 sm:h-8 bg-yellow-300 border-2 sm:border-3 border-black rotate-45"></div>
                   <div className="absolute -bottom-2 -right-2 sm:-bottom-4 sm:-right-4 w-6 h-6 sm:w-12 sm:h-12 bg-orange-500 border-2 sm:border-3 border-black rounded-full"></div>
                   <div className="absolute top-2 right-4 sm:top-4 sm:right-8 w-3 h-3 sm:w-6 sm:h-6 bg-green-400 border-1 sm:border-2 border-black rotate-45"></div>
@@ -87,12 +76,9 @@ const Page = () => {
               </div>
             </div>
 
-            {/* FLOATING SEARCH BAR */}
             <div className="relative mt-16 sm:mt-24 flex justify-center">
               <div className="relative max-w-lg w-full px-4">
-                {/* SEARCH SHADOW */}
                 <div className="absolute top-2 left-2 sm:top-3 sm:left-3 w-full h-full bg-black rotate-1 rounded-full"></div>
-                {/* SEARCH CONTAINER */}
                 <div className="relative bg-white border-3 sm:border-4 border-black rounded-full p-2 sm:p-3 flex items-center -rotate-1">
                   <Input
                     placeholder="Search our wild story..."

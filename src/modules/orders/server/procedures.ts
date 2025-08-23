@@ -18,7 +18,6 @@ export const ordersRouter = createTRPCRouter({
       const payload = ctx.dataBase;
       const user = ctx.session.user;
 
-      // Proveravamo da li je super admin ili ima tenant
       if (!isSuperAdmin(user) && (!user.tenants || user.tenants.length === 0)) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -29,10 +28,8 @@ export const ordersRouter = createTRPCRouter({
       let whereCondition = {};
 
       if (isSuperAdmin(user)) {
-        // Super admin vidi sve ordere
         whereCondition = {};
       } else {
-        // Tenant vidi samo ordere svojih proizvoda
         if (!user.tenants || user.tenants.length === 0) {
           throw new TRPCError({
             code: "FORBIDDEN",
@@ -66,7 +63,7 @@ export const ordersRouter = createTRPCRouter({
         limit: input.limit,
         where: whereCondition,
         depth: 2, // Da dobijemo user, product i tenant podatke
-        sort: "-createdAt", // Najnoviji orderi prvo
+        sort: "-createdAt",
       });
 
       return {
@@ -82,8 +79,6 @@ export const ordersRouter = createTRPCRouter({
         })),
       };
     }),
-
-  // Za korisnika da vidi svoje ordere (već postojeća funkcionalnost)
   getMyOrders: protectedProcedure
     .input(
       z.object({
@@ -121,7 +116,6 @@ export const ordersRouter = createTRPCRouter({
       };
     }),
 
-  // Dobijanje detalja jednog ordera
   getOne: protectedProcedure
     .input(
       z.object({
@@ -145,7 +139,6 @@ export const ordersRouter = createTRPCRouter({
         });
       }
 
-      // Proveravamo pristup
       const isOwner = (order.user as User).id === user.id;
 
       let isTenantOwner = false;

@@ -6,7 +6,6 @@ export const Tenants: CollectionConfig = {
   access: {
     create: ({ req }) => isSuperAdmin(req.user),
     delete: ({ req }) => isSuperAdmin(req.user),
-    //update - po default-u moze da menja tkd nema potrebe da diram nista izgleda...
   },
   admin: {
     useAsTitle: "slug",
@@ -18,7 +17,6 @@ export const Tenants: CollectionConfig = {
       type: "text",
       label: "Store Name",
       admin: {
-        //admin is used for someone who is in (who is looking) the admin panel (dashboard)
         description: "The name of the store, (e.g., 'My Awesome Store')",
       },
     },

@@ -93,7 +93,6 @@ export default function LibraryProductError({ error, reset }: Props) {
     target.style.boxShadow = "4px 4px 0px black";
   };
 
-  // Unauthorized access to library
   if (error instanceof TRPCClientError && error.data?.code === "UNAUTHORIZED") {
     return (
       <div style={containerStyle}>
@@ -131,8 +130,6 @@ export default function LibraryProductError({ error, reset }: Props) {
       </div>
     );
   }
-
-  // Product not found in library (not purchased)
   if (error instanceof TRPCClientError && error.data?.code === "NOT_FOUND") {
     return (
       <div style={containerStyle}>
@@ -170,8 +167,6 @@ export default function LibraryProductError({ error, reset }: Props) {
       </div>
     );
   }
-
-  // Other errors
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
