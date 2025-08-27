@@ -288,7 +288,7 @@ export const productsRouter = createTRPCRouter({
         });
 
         // Sortiranje po oceni ako je odabrano "best_rated"
-        let sortedData = [...dataWithSummarizeReviews];
+        const sortedData = [...dataWithSummarizeReviews];
         if (input.sort === "best_rated") {
           sortedData.sort((a, b) => {
             // Najveća ocena prva
