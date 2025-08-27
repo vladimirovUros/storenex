@@ -6,10 +6,10 @@ import {
 } from "nuqs/server";
 
 export const sortValues = [
-  "curated",
+  "oldest",
   // "default", slicno kao curated
   "hot_and_new",
-  "trending",
+  "best_rated",
   // "price-asc",
   // "price-desc",
   // "relevance",
@@ -24,7 +24,7 @@ export const params = {
       clearOnDefault: true,
     })
     .withDefault(""),
-  sort: parseAsStringLiteral(sortValues).withDefault("curated"),
+  sort: parseAsStringLiteral(sortValues).withDefault("oldest"),
   minPrice: parseAsString
     .withOptions({
       clearOnDefault: true,

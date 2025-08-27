@@ -5,7 +5,7 @@ import {
   parseAsStringLiteral,
 } from "nuqs";
 
-const sortValues = ["curated", "hot_and_new", "trending"] as const;
+const sortValues = ["oldest", "hot_and_new", "best_rated"] as const;
 
 const params = {
   search: parseAsString
@@ -13,7 +13,7 @@ const params = {
       clearOnDefault: true,
     })
     .withDefault(""),
-  sort: parseAsStringLiteral(sortValues).withDefault("curated"),
+  sort: parseAsStringLiteral(sortValues).withDefault("oldest"),
   minPrice: parseAsString
     .withOptions({
       clearOnDefault: true,

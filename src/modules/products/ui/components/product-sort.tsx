@@ -13,25 +13,25 @@ export const ProductSort = () => {
         size="sm"
         className={cn(
           "rounded-full bg-white hover:bg-white",
-          filters.sort !== "curated" &&
+          filters.sort !== "oldest" &&
             "bg-transparent border-transparent hover:border-border hover:bg-transparent"
         )}
         variant="secondary"
-        onClick={() => setFilters({ ...filters, sort: "curated" })}
+        onClick={() => setFilters({ ...filters, sort: "oldest" })}
       >
-        Curated
+        Oldest
       </Button>
       <Button
         size="sm"
         className={cn(
           "rounded-full bg-white hover:bg-white",
-          filters.sort !== "trending" &&
+          filters.sort !== "best_rated" &&
             "bg-transparent border-transparent hover:border-border hover:bg-transparent"
         )}
         variant="secondary"
-        onClick={() => setFilters({ ...filters, sort: "trending" })}
+        onClick={() => setFilters({ ...filters, sort: "best_rated" })}
       >
-        Trending
+        Best Rated
       </Button>
       <Button
         size="sm"

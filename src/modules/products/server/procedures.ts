@@ -137,12 +137,12 @@ export const productsRouter = createTRPCRouter({
 
       let sort: Sort = "-createdAt";
 
-      if (input.sort === "curated") {
-        sort = "-createdAt";
+      if (input.sort === "oldest") {
+        sort = "+createdAt"; // Najstariji prvi (first added)
       } else if (input.sort === "hot_and_new") {
-        sort = "+createdAt";
-      } else if (input.sort === "trending") {
-        sort = "-createdAt";
+        sort = "-createdAt"; // Najnoviji prvi (hot & new)
+      } else if (input.sort === "best_rated") {
+        sort = "-createdAt"; // Sortiraće se po oceni u post-processing
       }
 
       if (!isNaN(min) && !isNaN(max) && min > max) {
@@ -287,9 +287,24 @@ export const productsRouter = createTRPCRouter({
           };
         });
 
+        // Sortiranje po oceni ako je odabrano "best_rated"
+        let sortedData = [...dataWithSummarizeReviews];
+        if (input.sort === "best_rated") {
+          sortedData.sort((a, b) => {
+            // Najveća ocena prva
+            if (b.reviewRating !== a.reviewRating) {
+              return b.reviewRating - a.reviewRating;
+            }
+            // Ako je ista ocena, najnoviji prvi
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          });
+        }
+
         return {
           ...data,
-          docs: dataWithSummarizeReviews.map((doc) => ({
+          docs: sortedData.map((doc) => ({
             ...doc,
             image: doc.image as Media | null,
             tenant: doc.tenant as Tenant & { image: Media | null },
