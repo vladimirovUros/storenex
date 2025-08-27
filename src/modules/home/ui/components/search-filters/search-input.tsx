@@ -1,5 +1,10 @@
 import { Input } from "@/components/ui/input";
-import { BookmarkCheckIcon, ListFilterIcon, SearchIcon } from "lucide-react";
+import {
+  BookmarkCheckIcon,
+  ListFilterIcon,
+  SearchIcon,
+  StoreIcon,
+} from "lucide-react";
 import { CategoriesSidebar } from "./categories-sidebar";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -26,6 +31,12 @@ export const SearchInput = ({
 
   const trpc = useTRPC();
   const session = useQuery(trpc.auth.session.queryOptions());
+
+  const getTenantSlug = () => {
+    if (!session.data?.user?.tenants?.[0]?.tenant) return null;
+    const tenant = session.data.user.tenants[0].tenant;
+    return typeof tenant === "string" ? tenant : tenant.slug;
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -66,13 +77,26 @@ export const SearchInput = ({
       >
         <ListFilterIcon />
       </Button>
+
       {isClient && session.isSuccess && session.data?.user && (
-        <Link prefetch href="/library">
-          <Button variant="elevated" className="flex items-center gap-2">
-            Library
-            <BookmarkCheckIcon />
-          </Button>
-        </Link>
+        <>
+          <Link prefetch href="/library">
+            <Button variant="elevated" className="flex items-center gap-2">
+              Library
+              <BookmarkCheckIcon />
+            </Button>
+          </Link>
+          {session.data.user.tenants &&
+            session.data.user.tenants.length > 0 &&
+            getTenantSlug() && (
+              <Link prefetch href={`/tenants/${getTenantSlug()}`}>
+                <Button variant="elevated" className="flex items-center gap-2">
+                  Store
+                  <StoreIcon />
+                </Button>
+              </Link>
+            )}
+        </>
       )}
     </div>
   );
