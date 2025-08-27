@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
+import { generateTenantURL } from "@/lib/utils";
 import Link from "next/link";
 
 interface SearchFiltersProps {
@@ -89,7 +90,7 @@ export const SearchInput = ({
           {session.data.user.tenants &&
             session.data.user.tenants.length > 0 &&
             getTenantSlug() && (
-              <Link prefetch href={`/tenants/${getTenantSlug()}`}>
+              <Link prefetch href={generateTenantURL(getTenantSlug()!)}>
                 <Button variant="elevated" className="flex items-center gap-2">
                   Store
                   <StoreIcon />
